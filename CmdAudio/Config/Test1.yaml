@@ -1,0 +1,175 @@
+---
+Generators:
+  -
+    Id: freq
+    Type: Sine
+    frequency: 4.0
+  -
+    Id: freqLerp
+    Type: Lerp
+    min: 100.0
+    max: 10.0
+    value: freq
+  -
+    Id: mainOsc
+    Type: Sine
+    frequency: freqLerp
+
+  -
+    Id: beep.osc
+    Type: Sine
+    frequency: basefrequency
+  -
+    Id: beep.duration
+    Type: Pulse
+    frequency: length
+  -
+    Id: beep.main
+    Type: Multiply
+    in1: beep.osc
+    in2: beep.duration
+  -
+    Id: beep
+    Type: Component
+    inputs: [ basefrequency, length ]
+    source: beep.main
+  -
+    Id: componentTest
+    Type: Component
+    inputs: [ frequency, length ]
+    source:
+      Id: blah
+      Type: Sine
+      frequency: frequency
+
+
+
+  -
+    Id: release.ramp
+    Type: Ramp
+    time: time
+  -
+    Id: release.invert
+    Type: Lerp
+    value: release.ramp
+    min: 1.0
+    max: 0.0
+  -
+    Id: release.mult
+    Type: Multiply
+    in1: audio
+    in2: release.invert
+  -
+    Id: release
+    Type: Component
+    inputs: [ audio, time ]
+    source: release.mult
+
+
+
+
+  -
+    Id: tremshape
+    Type: Sine
+    frequency: 5.0
+  -
+    Id: tremapply
+    Type: Multiply
+    in1: tremshape
+    in2: audio
+  -
+    Id: tremalo
+    Type: Component
+    inputs: [ audio ]
+    source: tremapply
+
+
+  -
+    Id: beep440
+    Type: beep
+    basefrequency: 440.0
+    length: 1.0
+  -
+    Id: beep480
+    Type: beep
+    basefrequency: 140.0
+    length: 1.0
+
+  -
+    Id: valuesweep.ramp
+    Type: Ramp
+    time: time1
+  -
+    Id: valuesweep.lerp
+    Type: Lerp
+    Value: valuesweep.ramp
+    min: start
+    max: end
+  -
+    Id: valuesweep
+    Type: Component
+    inputs: [start, end, time]
+    source: valuesweep.lerp
+
+  -
+    Id: freqsweep
+    Type: valuesweep
+    start: 140.0
+    end: 40.0
+    time1: time
+  -
+    Id: clipsweep
+    Type: valuesweep
+    start: 0.15
+    end: 2
+    time1: time
+
+  -
+    Id: beepsweep
+    Type: beep
+    basefrequency: freqsweep
+    length: time
+  -
+    Id: beepclipped
+    Type: Hardclip
+    in: beepsweep
+    clip: clipsweep
+  -
+    Id: trembeep440
+    Type: tremalo
+    audio: beep440
+  -
+    Id: releasetest
+    Type: release
+    audio: beepclipped
+    time: 0.2
+
+  -
+    Id: delaytest
+    Type: Delay
+    delay: 11050
+    duration: 2.0
+    in: releasetest
+  -
+    Id: delaytest2
+    Type: Delay
+    delay: 22050
+    duration: 2.0
+    in: releasetest
+
+  -
+    Id: mixer
+    Type: Add
+    in: [ delaytest, delaytest2, releasetest ]
+  -
+    Id: mixerout
+    Type: Multiply
+    in1: mixer
+    in2: 1
+
+
+Outputs:
+  -
+    Id: out1
+    Type: audio
+    Source: mixerout

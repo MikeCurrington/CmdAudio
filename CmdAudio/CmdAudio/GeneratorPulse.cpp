@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "math.h"
 #include "GeneratorPulse.h"
+#include "MachineState.h"
 
 GeneratorPulse::GeneratorPulse( int sampleRate ) : GeneratorWaveformBase(sampleRate)
 {
@@ -12,13 +13,16 @@ GeneratorPulse::~GeneratorPulse()
 
 void GeneratorPulse::Supply(MachineState & machineState, SampleDataBuffer & rDataBuffer, int startSample)
 {
-    const float fSampleRate = (float) this->sampleRate;
+    BaseCountedPtr<GeneratorStatePulse> generatorState = machineState.GetGeneratorState<GeneratorStatePulse>( GetId() );
     
-    if (frequencyGenerator != NULL)
+    const float fSampleRate = (float) this->sampleRate;
+
+    if (frequencyGenerator)
     {
         frequencyGenerator->Supply(machineState, rDataBuffer, startSample);
+
         float fPiDivSampleRate = 1.0f / fSampleRate;
-        float fSample = fPiDivSampleRate * (float)startSample;
+        float fSample = generatorState->m_phase;
         for (int i = 0; i < rDataBuffer.GetLength(); i++)
         {
             float fOut = (fSample >= 0.0f && fSample < 1.0f) ? 1.0f : 0.0f;
@@ -26,5 +30,8 @@ void GeneratorPulse::Supply(MachineState & machineState, SampleDataBuffer & rDat
             rDataBuffer[i] = fOut;
             fSample = nextAngle;
         }
+        generatorState->m_phase = fSample;
     }
 }
+
+

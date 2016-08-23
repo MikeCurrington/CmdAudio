@@ -14,6 +14,7 @@
 #include "GeneratorValueTransformHardClip.h"
 #include "OutputWav.h"
 #include "OutputAudioQueue.h"
+#include "MachineState.h"
 #include "AudioHierarchy.h"
 #include "CmdAudio.h"
 
@@ -92,11 +93,12 @@ int _main(int argc, const char* argv[])
 	const float sampleLengthSeconds = 8.0f;
 	const int outputLength = (int) (sampleRate * sampleLengthSeconds);	// length of sample to generate
 
+    MachineState machineState;
     do {
         auto config = LoadConfig( argv[1] );
         
         AudioHierarchy * hierarchy = new AudioHierarchy( config, sampleRate );
-        hierarchy->Write(outputLength);
+        hierarchy->Write(machineState, outputLength);
         delete hierarchy;
         hierarchy = nullptr;
     } while(loop);

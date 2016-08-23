@@ -18,4 +18,29 @@ public:
 
 	virtual void AddInput(const char * pParamName, BaseCountedPtr<GeneratorBase> value);
 	virtual void Supply(MachineState& machineState, SampleDataBuffer & rDataBuffer, int startSample) = 0;
+    
+protected:
+    int                 GetId()     { return id; }
+
+private:
+    int                 id;
+};
+
+
+///
+/// Base class for the data local to an instance of a sample generator
+///
+class GeneratorStateBase : public BaseCounted<GeneratorStateBase>
+{
+public:
+    GeneratorStateBase(int id);
+    
+protected:
+    int                 GetId()     { return id; }
+    
+private:
+    friend class MachineState;
+
+    BaseCountedPtr<GeneratorStateBase> next;
+    int                 id;
 };

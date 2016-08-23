@@ -1,5 +1,7 @@
 #pragma once
 #include "GeneratorBase.h"
+#include "GeneratorArray.h"
+
 class GeneratorMultiply :
 	public GeneratorBase
 {
@@ -11,7 +13,6 @@ public:
 	virtual void Supply(MachineState & machineState, SampleDataBuffer & rDataBuffer, int startSample) override;
 
 protected:
-	BaseCountedPtr<GeneratorBase> aGenerator;
-	BaseCountedPtr<GeneratorBase> bGenerator;
+    BaseCountedPtr<GeneratorBase> generators;
 };
 

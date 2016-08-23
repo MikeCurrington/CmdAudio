@@ -30,12 +30,11 @@ void OutputWav::AddInput(const char * pParamName, BaseCountedPtr<GeneratorBase> 
     }
 }
 
-void OutputWav::Write(int outputLength)
+void OutputWav::Write(MachineState& machineState, int outputLength)
 {
     if (sourceGenerator)
     {
         SampleDataBuffer output(outputLength);
-        MachineState machineState;
         sourceGenerator->Supply(machineState, output, 0);
 
         wavWriter->Write("samples.wav", output);

@@ -17,3 +17,13 @@ protected:
 	int sampleRate;
 	BaseCountedPtr<GeneratorBase> timeGenerator;
 };
+
+
+class GeneratorStateRamp : public GeneratorStateBase
+{
+public:
+    GeneratorStateRamp(int id);
+protected:
+    friend class GeneratorRamp;
+    float m_phase;
+};

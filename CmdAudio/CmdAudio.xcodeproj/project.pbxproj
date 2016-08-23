@@ -11,12 +11,14 @@
 		2703E9BE1BF59D7F00AAD0C6 /* OutputBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2703E9BC1BF59D7F00AAD0C6 /* OutputBase.cpp */; };
 		2703E9C31BF5ADCB00AAD0C6 /* OutputWav.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2703E9C11BF5ADCB00AAD0C6 /* OutputWav.cpp */; };
 		2703E9C61BF5C31E00AAD0C6 /* AudioHierarchy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2703E9C41BF5C31E00AAD0C6 /* AudioHierarchy.cpp */; };
+		2721DBF81D4C959900CEFBCF /* GeneratorFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2721DBF61D4C959900CEFBCF /* GeneratorFilter.cpp */; };
 		27373AA81D433B2D00FF6521 /* OutputAudioQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 27373AA61D433B2D00FF6521 /* OutputAudioQueue.cpp */; };
 		27373AAA1D44064B00FF6521 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27373AA91D44064B00FF6521 /* CoreAudio.framework */; };
 		27373AAC1D440F1F00FF6521 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27373AAB1D440F1F00FF6521 /* AudioToolbox.framework */; };
 		27373AAE1D440F3300FF6521 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27373AAD1D440F3300FF6521 /* CoreFoundation.framework */; };
 		274B87EE1D33638400374A02 /* BaseCounted.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 274B87EC1D33638400374A02 /* BaseCounted.cpp */; };
 		274B88011D3B119E00374A02 /* GeneratorAdd.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 274B87FF1D3B119E00374A02 /* GeneratorAdd.cpp */; };
+		275346771D64377A00EB64D7 /* GeneratorFilterComb.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 275346751D64377A00EB64D7 /* GeneratorFilterComb.cpp */; };
 		2761C3F51D3212C8008D5041 /* MachineState.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2761C3F41D3212C8008D5041 /* MachineState.cpp */; };
 		2769070C1C0429DE00C4734A /* GeneratorState.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2769070A1C0429DE00C4734A /* GeneratorState.cpp */; };
 		276ED70B1BE724E500D4E788 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 276ED70A1BE724E500D4E788 /* main.cpp */; };
@@ -42,6 +44,10 @@
 		27DC984A1BFD83DA00D7D8C7 /* GeneratorUnbound.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 27DC98481BFD83DA00D7D8C7 /* GeneratorUnbound.cpp */; };
 		27DC984D1BFE1D1600D7D8C7 /* GeneratorArray.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 27DC984B1BFE1D1600D7D8C7 /* GeneratorArray.cpp */; };
 		27DDD0B61C058BB900EF46D6 /* GeneratorInstance.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 27DDD0B41C058BB900EF46D6 /* GeneratorInstance.cpp */; };
+		27E299371D6A95E500046849 /* GeneratorFilterHigh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 27E299351D6A95E500046849 /* GeneratorFilterHigh.cpp */; };
+		27E2994A1D6AB83300046849 /* GeneratorMidiChannel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 27E299481D6AB83300046849 /* GeneratorMidiChannel.cpp */; };
+		27EDD7141D61820B0051C947 /* GeneratorNoise.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 27EDD7121D61820B0051C947 /* GeneratorNoise.cpp */; };
+		27EDD7271D618E080051C947 /* GeneratorPinkify.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 27EDD7251D618E080051C947 /* GeneratorPinkify.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -132,6 +138,8 @@
 		2703E9C21BF5ADCB00AAD0C6 /* OutputWav.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OutputWav.h; sourceTree = "<group>"; };
 		2703E9C41BF5C31E00AAD0C6 /* AudioHierarchy.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AudioHierarchy.cpp; sourceTree = "<group>"; };
 		2703E9C51BF5C31E00AAD0C6 /* AudioHierarchy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioHierarchy.h; sourceTree = "<group>"; };
+		2721DBF61D4C959900CEFBCF /* GeneratorFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GeneratorFilter.cpp; sourceTree = "<group>"; };
+		2721DBF71D4C959900CEFBCF /* GeneratorFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GeneratorFilter.h; sourceTree = "<group>"; };
 		27373AA61D433B2D00FF6521 /* OutputAudioQueue.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OutputAudioQueue.cpp; sourceTree = "<group>"; };
 		27373AA71D433B2D00FF6521 /* OutputAudioQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OutputAudioQueue.h; sourceTree = "<group>"; };
 		27373AA91D44064B00FF6521 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
@@ -141,6 +149,8 @@
 		274B87ED1D33638400374A02 /* BaseCounted.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseCounted.h; sourceTree = "<group>"; };
 		274B87FF1D3B119E00374A02 /* GeneratorAdd.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GeneratorAdd.cpp; sourceTree = "<group>"; };
 		274B88001D3B119E00374A02 /* GeneratorAdd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GeneratorAdd.h; sourceTree = "<group>"; };
+		275346751D64377A00EB64D7 /* GeneratorFilterComb.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GeneratorFilterComb.cpp; sourceTree = "<group>"; };
+		275346761D64377A00EB64D7 /* GeneratorFilterComb.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GeneratorFilterComb.h; sourceTree = "<group>"; };
 		2761C3F41D3212C8008D5041 /* MachineState.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MachineState.cpp; sourceTree = "<group>"; };
 		2769070A1C0429DE00C4734A /* GeneratorState.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GeneratorState.cpp; sourceTree = "<group>"; };
 		2769070B1C0429DE00C4734A /* GeneratorState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GeneratorState.h; sourceTree = "<group>"; };
@@ -192,6 +202,14 @@
 		27DC984C1BFE1D1600D7D8C7 /* GeneratorArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GeneratorArray.h; sourceTree = "<group>"; };
 		27DDD0B41C058BB900EF46D6 /* GeneratorInstance.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GeneratorInstance.cpp; sourceTree = "<group>"; };
 		27DDD0B51C058BB900EF46D6 /* GeneratorInstance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GeneratorInstance.h; sourceTree = "<group>"; };
+		27E299351D6A95E500046849 /* GeneratorFilterHigh.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GeneratorFilterHigh.cpp; sourceTree = "<group>"; };
+		27E299361D6A95E500046849 /* GeneratorFilterHigh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GeneratorFilterHigh.h; sourceTree = "<group>"; };
+		27E299481D6AB83300046849 /* GeneratorMidiChannel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GeneratorMidiChannel.cpp; sourceTree = "<group>"; };
+		27E299491D6AB83300046849 /* GeneratorMidiChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GeneratorMidiChannel.h; sourceTree = "<group>"; };
+		27EDD7121D61820B0051C947 /* GeneratorNoise.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GeneratorNoise.cpp; sourceTree = "<group>"; };
+		27EDD7131D61820B0051C947 /* GeneratorNoise.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GeneratorNoise.h; sourceTree = "<group>"; };
+		27EDD7251D618E080051C947 /* GeneratorPinkify.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GeneratorPinkify.cpp; sourceTree = "<group>"; };
+		27EDD7261D618E080051C947 /* GeneratorPinkify.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GeneratorPinkify.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -243,12 +261,12 @@
 				276ED7171BE725B400D4E788 /* GeneratorValueTransformHardClip.cpp */,
 				276ED7181BE725B400D4E788 /* GeneratorValueTransformHardClip.h */,
 				276ED71F1BE725B400D4E788 /* GeneratorValueTransform.cpp */,
+				276ED7271BE725B400D4E788 /* GeneratorValueTransform.h */,
 				276ED7201BE725B400D4E788 /* GeneratorWaveformBase.cpp */,
 				276ED7211BE725B400D4E788 /* GeneratorLerp.cpp */,
 				276ED7241BE725B400D4E788 /* GeneratorLerp.h */,
 				276ED7221BE725B400D4E788 /* GeneratorConstant.cpp */,
 				276ED7251BE725B400D4E788 /* GeneratorConstant.h */,
-				276ED7271BE725B400D4E788 /* GeneratorValueTransform.h */,
 				276ED7281BE725B400D4E788 /* GeneratorDelay.h */,
 				276ED71E1BE725B400D4E788 /* GeneratorMultiply.cpp */,
 				276ED72A1BE725B400D4E788 /* GeneratorMultiply.h */,
@@ -268,6 +286,18 @@
 				27DDD0B51C058BB900EF46D6 /* GeneratorInstance.h */,
 				274B87FF1D3B119E00374A02 /* GeneratorAdd.cpp */,
 				274B88001D3B119E00374A02 /* GeneratorAdd.h */,
+				2721DBF61D4C959900CEFBCF /* GeneratorFilter.cpp */,
+				2721DBF71D4C959900CEFBCF /* GeneratorFilter.h */,
+				27E299351D6A95E500046849 /* GeneratorFilterHigh.cpp */,
+				27E299361D6A95E500046849 /* GeneratorFilterHigh.h */,
+				275346751D64377A00EB64D7 /* GeneratorFilterComb.cpp */,
+				275346761D64377A00EB64D7 /* GeneratorFilterComb.h */,
+				27EDD7121D61820B0051C947 /* GeneratorNoise.cpp */,
+				27EDD7131D61820B0051C947 /* GeneratorNoise.h */,
+				27EDD7251D618E080051C947 /* GeneratorPinkify.cpp */,
+				27EDD7261D618E080051C947 /* GeneratorPinkify.h */,
+				27E299481D6AB83300046849 /* GeneratorMidiChannel.cpp */,
+				27E299491D6AB83300046849 /* GeneratorMidiChannel.h */,
 			);
 			name = Generators;
 			sourceTree = "<group>";
@@ -315,11 +345,11 @@
 				27B045861D322537003CEC0D /* MachineState.h */,
 				2761C3F41D3212C8008D5041 /* MachineState.cpp */,
 				276ED7111BE725B400D4E788 /* CmdAudio.cpp */,
-				2703E9BF1BF5AD4100AAD0C6 /* Generators */,
-				276ED71A1BE725B400D4E788 /* SampleDataBuffer.cpp */,
-				276ED71B1BE725B400D4E788 /* GeneratorBase.cpp */,
 				276ED71C1BE725B400D4E788 /* CmdAudio.h */,
+				2703E9BF1BF5AD4100AAD0C6 /* Generators */,
+				276ED71B1BE725B400D4E788 /* GeneratorBase.cpp */,
 				276ED71D1BE725B400D4E788 /* GeneratorBase.h */,
+				276ED71A1BE725B400D4E788 /* SampleDataBuffer.cpp */,
 				276ED72C1BE725B400D4E788 /* SampleDataBuffer.h */,
 				276ED72D1BE725B400D4E788 /* TransformClamp.h */,
 				276ED72E1BE725B400D4E788 /* TransformClamp.cpp */,
@@ -473,8 +503,11 @@
 				276ED73A1BE725B400D4E788 /* WavWriter.cpp in Sources */,
 				27DDD0B61C058BB900EF46D6 /* GeneratorInstance.cpp in Sources */,
 				276ED70B1BE724E500D4E788 /* main.cpp in Sources */,
+				27E299371D6A95E500046849 /* GeneratorFilterHigh.cpp in Sources */,
 				276ED73D1BE725B400D4E788 /* GeneratorMultiply.cpp in Sources */,
 				276ED7381BE725B400D4E788 /* GeneratorSaw.cpp in Sources */,
+				275346771D64377A00EB64D7 /* GeneratorFilterComb.cpp in Sources */,
+				27EDD7141D61820B0051C947 /* GeneratorNoise.cpp in Sources */,
 				274B87EE1D33638400374A02 /* BaseCounted.cpp in Sources */,
 				276ED73B1BE725B400D4E788 /* SampleDataBuffer.cpp in Sources */,
 				276ED7371BE725B400D4E788 /* GeneratorRamp.cpp in Sources */,
@@ -485,10 +518,12 @@
 				27DC98341BFB7D0B00D7D8C7 /* GeneratorComponent.cpp in Sources */,
 				2703E9C61BF5C31E00AAD0C6 /* AudioHierarchy.cpp in Sources */,
 				276ED7451BE725B400D4E788 /* stdafx.cpp in Sources */,
+				2721DBF81D4C959900CEFBCF /* GeneratorFilter.cpp in Sources */,
 				276ED7401BE725B400D4E788 /* GeneratorLerp.cpp in Sources */,
 				276ED7391BE725B400D4E788 /* GeneratorValueTransformHardClip.cpp in Sources */,
 				2703E9C31BF5ADCB00AAD0C6 /* OutputWav.cpp in Sources */,
 				276ED7361BE725B400D4E788 /* GeneratorDelay.cpp in Sources */,
+				27E2994A1D6AB83300046849 /* GeneratorMidiChannel.cpp in Sources */,
 				276ED7441BE725B400D4E788 /* TransformFunc.cpp in Sources */,
 				2761C3F51D3212C8008D5041 /* MachineState.cpp in Sources */,
 				276ED7431BE725B400D4E788 /* TransformClamp.cpp in Sources */,
@@ -496,6 +531,7 @@
 				276ED7351BE725B400D4E788 /* CmdAudio.cpp in Sources */,
 				2769070C1C0429DE00C4734A /* GeneratorState.cpp in Sources */,
 				276ED7411BE725B400D4E788 /* GeneratorConstant.cpp in Sources */,
+				27EDD7271D618E080051C947 /* GeneratorPinkify.cpp in Sources */,
 				27DC984D1BFE1D1600D7D8C7 /* GeneratorArray.cpp in Sources */,
 				276ED7421BE725B400D4E788 /* GeneratorSine.cpp in Sources */,
 				27DC984A1BFD83DA00D7D8C7 /* GeneratorUnbound.cpp in Sources */,

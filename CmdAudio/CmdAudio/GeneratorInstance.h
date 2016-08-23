@@ -26,3 +26,13 @@ protected:
     BaseCountedPtr<GeneratorComponent> component;
     BaseCountedPtr<GeneratorArray> inputs;
 };
+
+class GeneratorStateInstance : public GeneratorStateBase
+{
+public:
+    GeneratorStateInstance(int id, MachineState& parentMachineState);
+    ~GeneratorStateInstance();
+protected:
+    friend class GeneratorInstance;
+    MachineState* m_machineState;
+};

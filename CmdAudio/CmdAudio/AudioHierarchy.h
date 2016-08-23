@@ -28,7 +28,7 @@ public:
     AudioHierarchy( const YAML::Node config, int sampleRate );
     ~AudioHierarchy();
     
-    void Write( int outputLength );
+    void Write( MachineState& machineState, int outputLength );
     
 protected:
     std::pair<std::string, BaseCountedPtr<GeneratorBase>> ParseHierarchy( const YAML::Node & node, int sampleRate );

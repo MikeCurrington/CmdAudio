@@ -26,12 +26,25 @@ void GeneratorInstance::AddInput(const char * pParamName, BaseCountedPtr<Generat
 
 void GeneratorInstance::Supply(MachineState & machineState, SampleDataBuffer & rDataBuffer, int startSample)
 {
-    fprintf(stderr, "supply instance\n");
+    BaseCountedPtr<GeneratorStateInstance> generatorState = machineState.GetGeneratorState<GeneratorStateInstance>( GetId(), machineState );
 
-    machineState.PushParameters(inputs);
+    //    fprintf(stderr, "supply instance\n");
+
+    generatorState->m_machineState->PushParameters(inputs);
     
-    component->Supply(this, machineState, rDataBuffer, startSample);
+    component->Supply(this, *generatorState->m_machineState, rDataBuffer, startSample);
     
-    machineState.PopParameters();
+    generatorState->m_machineState->PopParameters();
+}
+
+
+GeneratorStateInstance::GeneratorStateInstance(int id, MachineState& parentMachineState) : GeneratorStateBase(id)
+{
+    m_machineState = new MachineState( parentMachineState );
+}
+
+GeneratorStateInstance::~GeneratorStateInstance()
+{
+    delete m_machineState;
 }
 

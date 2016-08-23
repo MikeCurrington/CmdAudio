@@ -15,5 +15,10 @@ public:
     GeneratorState();
     
 protected:
-    //    std::array<<#class _Tp#>, <#size_t _Size#>><GeneratorBase>
+    int             GetId()     { return id; }
+    
+private:
+    int             id;
+    
 };
+

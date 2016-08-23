@@ -3,7 +3,7 @@
 #include "GeneratorMultiply.h"
 
 
-GeneratorMultiply::GeneratorMultiply() : aGenerator(NULL), bGenerator(NULL)
+GeneratorMultiply::GeneratorMultiply() : generators(nullptr)
 {
 }
 
@@ -14,31 +14,44 @@ GeneratorMultiply::~GeneratorMultiply()
 
 void GeneratorMultiply::AddInput(const char * pParamName, BaseCountedPtr<GeneratorBase> value)
 {
-	if (strcasecmp(pParamName, "in1") == 0)
-	{
-        aGenerator = value;
+    if (strcasecmp(pParamName, "in") == 0)
+    {
+        assert( dynamic_cast<GeneratorArray*>(value.Obj()) != nullptr );
+        generators = value;
     }
-	else if (strcasecmp(pParamName, "in2") == 0)
-	{
-		bGenerator = value;
-	}
 	else
 		GeneratorBase::AddInput(pParamName, value);
 }
 
 void GeneratorMultiply::Supply(MachineState & machineState, SampleDataBuffer & rDataBuffer, int startSample)
 {
-	if (aGenerator && bGenerator)
-	{
-		aGenerator->Supply(machineState, rDataBuffer, startSample);
-
-		SampleDataBuffer bDataBuffer(rDataBuffer.GetLength());
-		bGenerator->Supply(machineState, bDataBuffer, startSample);
-
-		for (int i = 0; i < rDataBuffer.GetLength(); i++)
-		{
-			rDataBuffer[i] = rDataBuffer[i] * bDataBuffer[i];
-		}
-	}
+    if (generators)
+    {
+        GeneratorArray* generatorArray = dynamic_cast<GeneratorArray*>(generators.Obj());
+        if ( generatorArray != nullptr )
+        {
+            auto inputIter = generatorArray->begin();
+            if (inputIter != generatorArray->end())
+            {
+                inputIter->second->Supply(machineState, rDataBuffer, startSample);
+                inputIter++;
+                
+                for(; inputIter != generatorArray->end(); inputIter++)
+                {
+                    SampleDataBuffer bDataBuffer(rDataBuffer.GetLength());
+                    inputIter->second->Supply(machineState, bDataBuffer, startSample);
+                    
+                    for (int i = 0; i < rDataBuffer.GetLength(); i++)
+                    {
+                        rDataBuffer[i] = rDataBuffer[i] * bDataBuffer[i];
+                    }
+                }
+            }
+        }
+        else
+        {
+            assert(0);
+        }
+    }
 }
 

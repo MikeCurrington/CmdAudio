@@ -19,3 +19,12 @@ protected:
 	BaseCountedPtr<GeneratorBase> frequencyGenerator;
 };
 
+
+class GeneratorStateWaveformBase : public GeneratorStateBase
+{
+public:
+    GeneratorStateWaveformBase( int id) : GeneratorStateBase(id)
+    {
+    }
+};
+

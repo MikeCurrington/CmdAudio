@@ -1,7 +1,10 @@
 //MachineState
 #include "MachineState.h"
 
-MachineState::MachineState()
+MachineState::MachineState(MachineState* pParent)
+    : sampleRate(22050.0f)
+    , parent(pParent)
+    , nextStateId(0)
 {
 }
 
@@ -25,5 +28,21 @@ BaseCountedPtr<GeneratorBase> MachineState::Find( const std::string & name )
             return parameter;
         }
     }
+    if (parent != nullptr)
+    {
+        BaseCountedPtr<GeneratorBase> found = parent->Find(name);
+        if (found)
+        {
+            return found;
+        }
+    }
     return BaseCountedPtr<GeneratorBase>();
 }
+
+int MachineState::GenerateStateId()
+{
+    return ++nextStateId;
+}
+
+
+

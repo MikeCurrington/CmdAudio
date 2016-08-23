@@ -3,7 +3,7 @@ Generators:
   -
     Id: freq
     Type: Sine
-    frequency: 4.0
+    Frequency: 4.0
   -
     Id: freqLerp
     Type: Lerp
@@ -13,21 +13,20 @@ Generators:
   -
     Id: mainOsc
     Type: Sine
-    frequency: freqLerp
+    Frequency: freqLerp
 
   -
     Id: beep.osc
     Type: Sine
-    frequency: basefrequency
+    Frequency: basefrequency
   -
     Id: beep.duration
     Type: Pulse
-    frequency: length
+    Frequency: length
   -
     Id: beep.main
     Type: Multiply
-    in1: beep.osc
-    in2: beep.duration
+    in: [ beep.osc, beep.duration ]
   -
     Id: beep
     Type: Component
@@ -47,7 +46,7 @@ Generators:
   -
     Id: release.ramp
     Type: Ramp
-    time: time
+    Time: time
   -
     Id: release.invert
     Type: Lerp
@@ -57,8 +56,7 @@ Generators:
   -
     Id: release.mult
     Type: Multiply
-    in1: audio
-    in2: release.invert
+    in: [ audio, release.invert ]
   -
     Id: release
     Type: Component
@@ -71,12 +69,11 @@ Generators:
   -
     Id: tremshape
     Type: Sine
-    frequency: 5.0
+    Frequency: 5.0
   -
     Id: tremapply
     Type: Multiply
-    in1: tremshape
-    in2: audio
+    in: [ tremshape, audio ]
   -
     Id: tremalo
     Type: Component
@@ -98,7 +95,7 @@ Generators:
   -
     Id: valuesweep.ramp
     Type: Ramp
-    time: time1
+    Time: time1
   -
     Id: valuesweep.lerp
     Type: Lerp
@@ -108,7 +105,7 @@ Generators:
   -
     Id: valuesweep
     Type: Component
-    inputs: [start, end, time]
+    inputs: [start, end, time1]
     source: valuesweep.lerp
 
   -
@@ -142,7 +139,25 @@ Generators:
     Id: releasetest
     Type: release
     audio: beepclipped
-    time: 0.2
+    time: 0.9
+
+
+  -
+    Id: tremalo2.shape
+    Type: Sine
+    frequency: freq
+  -
+    Id: tremalo2.range
+    Type: Lerp
+    value: tremalo2.shape
+    min: min
+    max: max
+  -
+    Id: tremalo2
+    Type: Component
+    inputs: [ freq, min, max ]
+    source: tremalo2.range
+
 
   -
     Id: delaytest
@@ -151,25 +166,122 @@ Generators:
     duration: 2.0
     in: releasetest
   -
+    Id: delaytremalo
+    Type: tremalo2
+    freq: 4
+    min: 22000
+    max: 22500
+  -
     Id: delaytest2
     Type: Delay
-    delay: 22050
-    duration: 2.0
+    delay: 22000
+    duration: 0
     in: releasetest
 
   -
     Id: mixer
     Type: Add
-    in: [ delaytest, delaytest2, releasetest ]
+    in: [ releasetest, delaytest2 ]
+
+  -
+    Id: filtersweep
+    Type: valuesweep
+    start: 1000
+    end: 400
+    time1: 1.0
+  -
+    Id: resonancebounce
+    Type: valuesweep
+    start: 0
+    end: 4
+    time1: 0.5
+  -
+    Id: filter
+    Type: FilterLadder
+    in: mixer
+    frequency: filtersweep
+    resonance: resonancebounce
   -
     Id: mixerout
     Type: Multiply
-    in1: mixer
-    in2: 1
+    in: [ filter ]
+
+
+
+
+
+  -
+    Id: hihat.osc1
+    Type: Noise
+  -
+    Id: hihat.oscpink
+    value: hihat.white
+    Type: Pinkify
+  -
+    Id: hihat.sine
+    Type: Sine
+    Frequency: 4185.6
+  -
+    Id: hihat.osc2
+    Type: Sine
+    Frequency: 4185.6
+  -
+    Id: hihat.osc2out
+    Type: Multiply
+    in: [ hihat.osc2, 0.25 ]
+  -
+    Id: hihat.mix
+    Type: Add
+    in : [ hihat.osc1, hihat.osc2out ]
+  -
+    Id: hihat.mix
+    Type: Add
+    in : [ hihat.osc, hihat.sine ]
+  -
+    Id: hihat.release
+    Type: release
+    time: 0.125
+    audio: hihat.mix
+  -
+    Id: hihat.duration
+    Type: Pulse
+    Frequency: 8
+  -
+    Id: hihat.outmix
+    Type: Multiply
+    in: [ hihat.release, hihat.duration ]
+  -
+    Id: hihat.outfilter
+    Type: FilterHigh
+    in: hihat.outmix
+    frequency: 4000
+    resonance: 0.0
+  -
+    Id: hihat
+    Type: Component
+    source: hihat.outfilter
+
+  -
+    Id: hihattest
+    Type: hihat
+
+  -
+    Id: snare.comb
+    Type: FilterComb
+    in: hihat.mix
+    delay: 50
+    feedback: 0.75
+
+  -
+    Id: sequencer
+    Type: MidiChannel
+    Channel: 1
+    Component: hihat
 
 
 Outputs:
   -
     Id: out1
     Type: audio
-    Source: mixerout
+    Source: hihattest
+    Source_nope: mixerout

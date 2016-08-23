@@ -12,3 +12,15 @@ protected:
     
 protected:
 };
+
+
+class GeneratorStatePulse : public GeneratorStateBase
+{
+public:
+    GeneratorStatePulse(int id) : GeneratorStateBase(id), m_phase(0.0f)
+    {}
+private:
+    friend class GeneratorPulse;
+    float m_phase;
+};
+

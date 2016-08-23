@@ -8,6 +8,7 @@
 #pragma once
 
 #include "OutputBase.h"
+#include "MachineState.h"
 #include <AudioToolbox/AudioQueue.h>
 
 class AudioQueue;
@@ -20,7 +21,7 @@ public:
     OutputAudioQueue(int sampleRate);
     
     virtual void AddInput(const char * pParamName, BaseCountedPtr<GeneratorBase> value) override;
-    virtual void Write(int outputLength) override;
+    virtual void Write(MachineState& machineState, int outputLength) override;
     
 protected:
     ~OutputAudioQueue();
@@ -29,7 +30,10 @@ protected:
     bool FillBuffer( AudioQueueBuffer* buffer );
     
 protected:
-    BaseCountedPtr<GeneratorBase> sourceGenerator;
-    SampleDataBuffer* output;
-    int currentSampleOffset;
+    BaseCountedPtr<GeneratorBase> m_sourceGenerator;
+    SampleDataBuffer* m_output;
+    int m_outputLength;
+    int m_sampleRate;
+    int m_currentSampleOffset;
+    MachineState m_machineState;
 };

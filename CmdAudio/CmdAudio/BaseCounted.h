@@ -106,6 +106,12 @@ public:
     {
         return obj;
     }
+    template <class U>
+    BaseCountedPtr<U> StaticCast()
+    {
+        BaseCountedPtr<U> casted( static_cast<U*>(this->Obj()) );
+        return casted;
+    }
     
 private:
     mutable T* obj;

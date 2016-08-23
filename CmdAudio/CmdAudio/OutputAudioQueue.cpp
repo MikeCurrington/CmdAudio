@@ -15,21 +15,22 @@
 #include <CoreFoundation/CFRunLoop.h>
 
 #define SAMPLE_RATE 22050
-#define BUFFER_SIZE 128000
-#define NUM_BUFFERS 2
+#define BUFFER_SIZE 4096
+#define NUM_BUFFERS 8
 
 
 OutputAudioQueue::OutputAudioQueue(int sampleRate)
     : OutputBase()
-    , sourceGenerator(nullptr)
-    , output(nullptr)
-    , currentSampleOffset(0)
+    , m_sourceGenerator(nullptr)
+    , m_output(nullptr)
+    , m_currentSampleOffset(0)
+    , m_sampleRate(sampleRate)
 {
 }
 
 OutputAudioQueue::~OutputAudioQueue()
 {
-    delete output;
+    delete m_output;
 }
 
 
@@ -37,7 +38,7 @@ void OutputAudioQueue::AddInput(const char * pParamName, BaseCountedPtr<Generato
 {
     if (strcasecmp(pParamName, "source") == 0)
     {
-        this->sourceGenerator = value;
+        this->m_sourceGenerator = value;
     }
 }
 
@@ -59,14 +60,10 @@ void OutputAudioQueue::BufferFillCallback(void *custom_data, AudioQueueRef queue
 }
 
 
-void OutputAudioQueue::Write(int outputLength)
+void OutputAudioQueue::Write(MachineState& machineState, int outputLength)
 {
-    if (sourceGenerator)
+    if (m_sourceGenerator)
     {
-        output = new SampleDataBuffer(outputLength);
-        MachineState machineState;
-        sourceGenerator->Supply(machineState, *output, 0);
-        
         AudioStreamBasicDescription format;
         format.mSampleRate       = SAMPLE_RATE;
         format.mFormatID         = kAudioFormatLinearPCM;
@@ -81,6 +78,9 @@ void OutputAudioQueue::Write(int outputLength)
         AudioQueueRef queue;
         AudioQueueNewOutput(&format, BufferFillCallback, this, CFRunLoopGetCurrent(), kCFRunLoopCommonModes, 0, &queue);
         AudioQueueBufferRef buffer[NUM_BUFFERS];
+
+        m_outputLength = outputLength;
+        m_machineState = machineState;
         
         for(int i=0;i<NUM_BUFFERS;i++)
         {
@@ -104,18 +104,25 @@ void OutputAudioQueue::Write(int outputLength)
 
 bool OutputAudioQueue::FillBuffer( AudioQueueBufferRef buffer )
 {
+    int bufferLength = buffer->mAudioDataByteSize/sizeof(short);
+
+    if (m_output == nullptr || bufferLength != m_output->GetLength() )
+    {
+        delete m_output;
+        m_output = new SampleDataBuffer(bufferLength);
+    }
+    m_sourceGenerator->Supply(m_machineState, *m_output, m_currentSampleOffset);
+    
     short* casted_buffer = static_cast<short*>(buffer->mAudioData);
     
-    int outputLength = output->GetLength();
-    int remainingLength = outputLength - currentSampleOffset;
-    int bufferLength = buffer->mAudioDataByteSize/sizeof(short);
+    int remainingLength = m_outputLength - m_currentSampleOffset;
 
     int copySamples = (remainingLength > bufferLength) ? bufferLength : remainingLength;
     
     int i = 0;
     for( ;i<copySamples;i++ )
     {
-        short o = (short)(fmax(fmin(output->Get(i+currentSampleOffset), 1.0f), -1.0f) * 32767.0f);
+        short o = (short)(fmax(fmin(m_output->Get(i), 1.0f), -1.0f) * 32767.0f);
         casted_buffer[i] = o;
     }
     for( ;i<bufferLength;i++ )
@@ -124,7 +131,7 @@ bool OutputAudioQueue::FillBuffer( AudioQueueBufferRef buffer )
     }
 
     remainingLength -= copySamples;
-    currentSampleOffset += copySamples;
+    m_currentSampleOffset += copySamples;
 
     return remainingLength > 0;
 }

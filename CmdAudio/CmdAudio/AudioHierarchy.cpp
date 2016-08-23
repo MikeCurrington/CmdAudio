@@ -20,6 +20,13 @@
 #include "GeneratorPulse.h"
 #include "GeneratorUnbound.h"
 #include "GeneratorValueTransformHardClip.h"
+#include "GeneratorFilter.h"
+#include "GeneratorFilterHigh.h"
+#include "GeneratorFilterComb.h"
+#include "GeneratorNoise.h"
+#include "GeneratorPinkify.h"
+#include "GeneratorMidiChannel.h"
+
 
 #include "OutputWav.h"
 #include "OutputAudioQueue.h"
@@ -66,6 +73,13 @@ AudioHierarchy::GeneratorTypeToConstructor::GeneratorTypeToConstructor() {
     map.insert( tGeneratorToConstructor::value_type(std::string("Pulse"), [](int sampleRate) { return new GeneratorPulse(sampleRate);}) );
     map.insert( tGeneratorToConstructor::value_type(std::string("Ramp"), [](int sampleRate) { return new GeneratorRamp(sampleRate);}) );
     map.insert( tGeneratorToConstructor::value_type(std::string("Hardclip"), [](int sampleRate) { return new GeneratorValueTransformHardClip();}) );
+    map.insert( tGeneratorToConstructor::value_type(std::string("FilterLadder"), [](int sampleRate) { return new GeneratorFilter();}) );
+    map.insert( tGeneratorToConstructor::value_type(std::string("FilterHigh"), [](int sampleRate) { return new GeneratorFilterHigh();}) );
+    map.insert( tGeneratorToConstructor::value_type(std::string("FilterComb"), [](int sampleRate) { return new GeneratorFilterComb();}) );
+    map.insert( tGeneratorToConstructor::value_type(std::string("Noise"), [](int sampleRate) { return new GeneratorNoise(sampleRate);}) );
+    map.insert( tGeneratorToConstructor::value_type(std::string("Pinkify"), [](int sampleRate) { return new GeneratorPinkify(sampleRate);}) );
+    map.insert( tGeneratorToConstructor::value_type(std::string("MidiChannel"), [](int sampleRate) { return new GeneratorMidiChannel(sampleRate);}) );
+    
 
     map.insert( tGeneratorToConstructor::value_type(std::string("Component"), [](int sampleRate) { return new GeneratorComponent(sampleRate);}) );
 }
@@ -169,19 +183,25 @@ BaseCountedPtr<GeneratorBase> AudioHierarchy::ParseNode( const YAML::Node & yaml
         for( auto it=yamlNode.begin(); it!=yamlNode.end(); ++it )
         {
             auto strVal = (*it).as<std::string>();
-            fprintf(stdout, "array: %s\n", strVal.c_str());
-            
-            const std::unordered_map<std::string, BaseCountedPtr<GeneratorBase>>::const_iterator foundGenerator = generators.find(strVal);
-            if (foundGenerator != generators.end())
-            {
-                freqGenerator->AddInput( strVal.c_str(), foundGenerator->second );
+            try {
+                float fVal = (*it).as<float>();
+                fprintf(stdout, "  freq: %f\n", fVal );
+                freqGenerator->AddInput( strVal.c_str(), new GeneratorConstant( fVal ) );
             }
-            else
+            catch( YAML::TypedBadConversion<float> e )
             {
-                freqGenerator->AddInput( strVal.c_str(), new GeneratorUnbound( strVal ) );
+                fprintf(stdout, "array: %s\n", strVal.c_str());
+                
+                const std::unordered_map<std::string, BaseCountedPtr<GeneratorBase>>::const_iterator foundGenerator = generators.find(strVal);
+                if (foundGenerator != generators.end())
+                {
+                    freqGenerator->AddInput( strVal.c_str(), foundGenerator->second );
+                }
+                else
+                {
+                    freqGenerator->AddInput( strVal.c_str(), new GeneratorUnbound( strVal ) );
+                }
             }
-            
-            
         }
     }
     else if (yamlNode.IsMap())
@@ -214,11 +234,11 @@ BaseCountedPtr<GeneratorBase> AudioHierarchy::ParseNode( const YAML::Node & yaml
 }
 
 
-void AudioHierarchy::Write( int outputLength )
+void AudioHierarchy::Write( MachineState& machineState, int outputLength )
 {
     for( auto it=outputs.begin(); it!=outputs.end(); ++it )
     {
-        it->second->Write(outputLength);
+        it->second->Write(machineState, outputLength);
     }
 }
 

@@ -12,16 +12,16 @@
 #include "MachineState.h"
 
 
-GeneratorInstance::GeneratorInstance(GeneratorComponent * component) : GeneratorBase(), component(component)
+GeneratorInstance::GeneratorInstance( BaseCountedPtr<GeneratorComponent> component) : GeneratorBase(), m_component(component)
 {
-    inputs = new GeneratorArray();
+    m_inputs = new GeneratorArray();
 }
 
-void GeneratorInstance::AddInput(const char * pParamName, BaseCountedPtr<GeneratorBase> value)
+void GeneratorInstance::AddInput(const std::string& paramName, BaseCountedPtr<GeneratorBase> value)
 {
-    fprintf(stderr, "input instance: %s\n", pParamName);
+    fprintf(stderr, "input instance: %s\n", paramName.c_str());
     
-    inputs->AddInput(pParamName, value );
+    m_inputs->AddInput(paramName, value );
 }
 
 void GeneratorInstance::Supply(MachineState & machineState, SampleDataBuffer & rDataBuffer, int startSample)
@@ -30,9 +30,9 @@ void GeneratorInstance::Supply(MachineState & machineState, SampleDataBuffer & r
 
     //    fprintf(stderr, "supply instance\n");
 
-    generatorState->m_machineState->PushParameters(inputs);
+    generatorState->m_machineState->PushParameters(m_inputs);
     
-    component->Supply(this, *generatorState->m_machineState, rDataBuffer, startSample);
+    m_component->Supply(this, *generatorState->m_machineState, rDataBuffer, startSample);
     
     generatorState->m_machineState->PopParameters();
 }

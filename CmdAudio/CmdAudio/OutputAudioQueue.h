@@ -20,7 +20,7 @@ class OutputAudioQueue : public OutputBase
 public:
     OutputAudioQueue(int sampleRate);
     
-    virtual void AddInput(const char * pParamName, BaseCountedPtr<GeneratorBase> value) override;
+    virtual void AddInput(const std::string& paramName, BaseCountedPtr<GeneratorBase> value) override;
     virtual void Write(MachineState& machineState, int outputLength) override;
     
 protected:

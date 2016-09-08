@@ -12,14 +12,14 @@ GeneratorValueTransformHardClip::~GeneratorValueTransformHardClip()
 {
 }
 
-void GeneratorValueTransformHardClip::AddInput(const char * pParamName, BaseCountedPtr<GeneratorBase> value)
+void GeneratorValueTransformHardClip::AddInput(const std::string& paramName, BaseCountedPtr<GeneratorBase> value)
 {
-	if (strcasecmp(pParamName, "clip") == 0)
+	if (strcasecmp(paramName.c_str(), "clip") == 0)
 	{
 		this->clip = value;
 	}
 	else
-		GeneratorValueTransform::AddInput(pParamName, value);
+		GeneratorValueTransform::AddInput(paramName, value);
 }
 
 void GeneratorValueTransformHardClip::Supply(MachineState & machineState, SampleDataBuffer & rDataBuffer, int startSample)

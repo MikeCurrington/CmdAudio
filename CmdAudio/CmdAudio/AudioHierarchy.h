@@ -26,6 +26,8 @@ class AudioHierarchy
 {
 public:
     AudioHierarchy( const YAML::Node config, int sampleRate );
+    AudioHierarchy( BaseCountedPtr<GeneratorBase> generator, int sampleRate );
+    //    AudioHierarchy( )
     ~AudioHierarchy();
     
     void Write( MachineState& machineState, int outputLength );

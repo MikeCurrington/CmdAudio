@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "SampleDataBuffer.h"
 #include "WavWriter.h"
+#include "GeneratorInstance.h"
 #include "GeneratorLerp.h"
 #include "GeneratorConstant.h"
 #include "GeneratorDelay.h"
@@ -17,55 +18,89 @@
 #include "MachineState.h"
 #include "AudioHierarchy.h"
 #include "CmdAudio.h"
+#include "AudioHierarchyBuilder.h"
+
+#include "antlr4-runtime.h"
+//using namespace antlrcpptest;
+//using namespace antlr4;
 
 #include "yaml-cpp/yaml.h"
 
 
-//yaml-cpp/yaml.h"
-
-
-// Helpers
-static GeneratorBase * MakeLinearRamp(int sampleRate, float startVal, float endVal, float seconds)
-{
-	GeneratorBase * rampGen = new GeneratorRamp(sampleRate);
-	GeneratorBase * rampTime = new GeneratorConstant(seconds);
-	rampGen->AddInput("time", rampTime);
-	GeneratorBase * minValueGen = new GeneratorConstant(startVal);
-	GeneratorBase * maxValueGen = new GeneratorConstant(endVal);
-	GeneratorBase * valueLerp = new GeneratorLerp();
-	valueLerp->AddInput("value", rampGen);
-	valueLerp->AddInput("min", minValueGen);
-	valueLerp->AddInput("max", maxValueGen);
-
-	rampGen->Release();
-	rampTime->Release();
-	minValueGen->Release();
-	maxValueGen->Release();
-
-	return valueLerp;
-}
 
 static GeneratorBase * MakeSineOscillator(int sampleRate, float minValue, float maxValue, float frequency )
 {
-	GeneratorBase * sineGen = new GeneratorSine(sampleRate);
-	GeneratorBase * sineFreqGen = new GeneratorConstant(frequency);
-	sineGen->AddInput("frequency", sineFreqGen);
-
-	GeneratorBase * rangedValue = new GeneratorLerp();
-	GeneratorBase * maxValueGen = new GeneratorConstant(maxValue);
-	GeneratorBase * minValueGen = new GeneratorConstant(minValue);
-	rangedValue->AddInput("value", sineGen);
-	rangedValue->AddInput("min", minValueGen);
-	rangedValue->AddInput("max", maxValueGen);
-
-	maxValueGen->Release();
-	minValueGen->Release();
-	sineGen->Release();
-	sineFreqGen->Release();
-
-	return rangedValue;
+    GeneratorBase * sineGen = new GeneratorSine(sampleRate);
+    GeneratorBase * sineFreqGen = new GeneratorConstant(frequency);
+    sineGen->AddInput("frequency", sineFreqGen);
+    
+    GeneratorBase * rangedValue = new GeneratorLerp();
+    GeneratorBase * maxValueGen = new GeneratorConstant(maxValue);
+    GeneratorBase * minValueGen = new GeneratorConstant(minValue);
+    rangedValue->AddInput("value", sineGen);
+    rangedValue->AddInput("min", minValueGen);
+    rangedValue->AddInput("max", maxValueGen);
+    
+    maxValueGen->Release();
+    minValueGen->Release();
+    sineGen->Release();
+    sineFreqGen->Release();
+    
+    return rangedValue;
 }
 
+
+
+BaseCountedPtr<GeneratorBase> LoadProgram( const char * filename, int sampleRate )
+{
+    antlr4::ANTLRInputStream input("generator Main(time) = {\n      \
+                                   state  beep = Sine( time: time );\n         \
+                                   output beep;\n                \
+                                   }");
+    AudioHierarchyBuilder builder;
+    BaseCountedPtr<GeneratorComponent> component = builder.Build( &input );
+                                   
+    return new GeneratorInstance( component );
+                                   
+    /*
+     
+     // Syntax
+     beep = Sine( freq=1000 )
+     env  = Lerp( Ramp( time=1 ), 1, 0 )
+     out  = env * beep
+     
+     generator AttackRelease( time, attack, releaseTrigger, release ) =
+     {
+        state attackLerp = Lerp( Ramp( time=time, length=attack ), 0, 1 )
+        state decayLerp = Lerp( Ramp( time=releaseTrigger*time, length=decay ), 1, 0 )
+        output attackLerp * decayLerp
+     }
+     
+     generator Main( time ) =
+     {
+         state beep = Sine( time=1000 )
+         output beep
+     }
+     
+     */
+    
+    
+    
+    
+    /*
+    auto tree = parser.program();
+    
+    CmdAudioVisitor visit = new CmdAudioVisitor();
+    
+    auto eval = new EvalVisitor();
+    eval.Visit(tree);
+    
+    tokens.fill();
+    for (auto token : tokens.getTokens()) {
+        std::cout << token->toString() << std::endl;
+    }
+     */
+}
 
 
 YAML::Node LoadConfig( const char * filename )
@@ -95,9 +130,12 @@ int _main(int argc, const char* argv[])
 
     MachineState machineState;
     do {
-        auto config = LoadConfig( argv[1] );
+        AudioHierarchy * hierarchy = new AudioHierarchy( LoadProgram( argv[1], sampleRate ), sampleRate );
+        //AudioHierarchy * hierarchy = new AudioHierarchy( config, sampleRate );
         
-        AudioHierarchy * hierarchy = new AudioHierarchy( config, sampleRate );
+        //auto config = LoadConfig( argv[1] );
+        //AudioHierarchy * hierarchy = new AudioHierarchy( config, sampleRate );
+        
         hierarchy->Write(machineState, outputLength);
         delete hierarchy;
         hierarchy = nullptr;

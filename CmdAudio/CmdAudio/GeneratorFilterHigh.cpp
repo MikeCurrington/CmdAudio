@@ -21,18 +21,18 @@ GeneratorFilterHigh::~GeneratorFilterHigh()
 {
 }
 
-void GeneratorFilterHigh::AddInput(const char * pParamName, BaseCountedPtr<GeneratorBase> value)
+void GeneratorFilterHigh::AddInput(const std::string& paramName, BaseCountedPtr<GeneratorBase> value)
 {
-    if (strcasecmp(pParamName, "frequency") == 0)
+    if (strcasecmp(paramName.c_str(), "frequency") == 0)
     {
         frequencyGenerator = value;
     }
-    else if (strcasecmp(pParamName, "resonance") == 0)
+    else if (strcasecmp(paramName.c_str(), "resonance") == 0)
     {
         resonanceGenerator = value;
     }
     else
-        GeneratorValueTransform::AddInput(pParamName, value);
+        GeneratorValueTransform::AddInput(paramName, value);
 }
 
 float filthigh(float b_in, float cutFreqNorm, float rez, float& b_buf1, float& b_buf2, float& b_buf3, float& b_buf4 )

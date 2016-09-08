@@ -11,13 +11,13 @@ GeneratorWaveformBase::~GeneratorWaveformBase()
 {
 }
 
-void GeneratorWaveformBase::AddInput(const char * pParamName, BaseCountedPtr<GeneratorBase> value)
+void GeneratorWaveformBase::AddInput(const std::string& paramName, BaseCountedPtr<GeneratorBase> value)
 {
-	if (strcasecmp(pParamName, "Frequency") == 0)
+	if (strcasecmp(paramName.c_str(), "Frequency") == 0)
 	{
 		this->frequencyGenerator = value;
 	}
 	else
-		GeneratorBase::AddInput(pParamName, value);
+		GeneratorBase::AddInput(paramName, value);
 }
 

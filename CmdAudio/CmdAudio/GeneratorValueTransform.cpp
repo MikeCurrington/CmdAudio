@@ -11,13 +11,13 @@ GeneratorValueTransform::~GeneratorValueTransform()
 {
 }
 
-void GeneratorValueTransform::AddInput(const char * pParamName, BaseCountedPtr<GeneratorBase> value)
+void GeneratorValueTransform::AddInput(const std::string& paramName, BaseCountedPtr<GeneratorBase> value)
 {
-	if (strcasecmp(pParamName, "in") == 0)
+	if (strcasecmp(paramName.c_str(), "in") == 0)
 	{
 		this->sourceBuffer = value;
 	}
 	else
-		GeneratorBase::AddInput(pParamName, value);
+		GeneratorBase::AddInput(paramName, value);
 }
 

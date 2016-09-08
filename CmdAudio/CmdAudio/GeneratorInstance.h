@@ -16,15 +16,15 @@ class GeneratorInstance : public GeneratorBase
 private:
     GeneratorInstance();		// deliberately not implemented
 public:
-    GeneratorInstance(GeneratorComponent * component);
+    GeneratorInstance(BaseCountedPtr<GeneratorComponent> component);
     
 protected:
-    virtual void AddInput(const char * pParamName, BaseCountedPtr<GeneratorBase> value) override;
+    virtual void AddInput(const std::string& paramName, BaseCountedPtr<GeneratorBase> value) override;
     virtual void Supply(MachineState & machineState, SampleDataBuffer & rDataBuffer, int startSample) override;
     
 protected:
-    BaseCountedPtr<GeneratorComponent> component;
-    BaseCountedPtr<GeneratorArray> inputs;
+    BaseCountedPtr<GeneratorComponent> m_component;
+    BaseCountedPtr<GeneratorArray> m_inputs;
 };
 
 class GeneratorStateInstance : public GeneratorStateBase

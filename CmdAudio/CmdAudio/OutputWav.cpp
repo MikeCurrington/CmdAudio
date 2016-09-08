@@ -22,9 +22,9 @@ OutputWav::~OutputWav()
     delete wavWriter;
 }
 
-void OutputWav::AddInput(const char * pParamName, BaseCountedPtr<GeneratorBase> value)
+void OutputWav::AddInput(const std::string& paramName, BaseCountedPtr<GeneratorBase> value)
 {
-    if (strcasecmp(pParamName, "source") == 0)
+    if (strcasecmp(paramName.c_str(), "source") == 0)
     {
         this->sourceGenerator = value;
     }

@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "1FE72D2544D1FF0F39A2ECD518A5798DBA64F841",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "4C6886F830AB3ECA37C54FC697421B565CA758C5" : 0,
+    "1FE72D2544D1FF0F39A2ECD518A5798DBA64F841" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "C3054A74-67F3-4D92-909C-699147608411",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "4C6886F830AB3ECA37C54FC697421B565CA758C5" : "",
+    "1FE72D2544D1FF0F39A2ECD518A5798DBA64F841" : "CmdAudio\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "CmdAudio",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "CmdAudio\/CmdAudio.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/MikeCurrington\/CmdAudio.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "1FE72D2544D1FF0F39A2ECD518A5798DBA64F841"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "ssh:\/\/192.168.2.210\/users\/git\/repositories\/Projects.git\/",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "4C6886F830AB3ECA37C54FC697421B565CA758C5"
+    }
+  ]
+}

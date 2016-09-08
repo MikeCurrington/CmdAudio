@@ -12,14 +12,14 @@ GeneratorRamp::~GeneratorRamp()
 {
 }
 
-void GeneratorRamp::AddInput(const char * pParamName, BaseCountedPtr<GeneratorBase> value)
+void GeneratorRamp::AddInput(const std::string& paramName, BaseCountedPtr<GeneratorBase> value)
 {
-	if (strcasecmp(pParamName, "Time") == 0)
+	if (strcasecmp(paramName.c_str(), "Time") == 0)
 	{
 		this->timeGenerator = value;
 	}
 	else
-		GeneratorBase::AddInput(pParamName, value);
+		GeneratorBase::AddInput(paramName, value);
 }
 
 

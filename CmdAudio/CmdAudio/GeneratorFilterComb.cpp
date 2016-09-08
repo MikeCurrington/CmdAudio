@@ -20,18 +20,18 @@ GeneratorFilterComb::~GeneratorFilterComb()
 {
 }
 
-void GeneratorFilterComb::AddInput(const char * pParamName, BaseCountedPtr<GeneratorBase> value)
+void GeneratorFilterComb::AddInput(const std::string& paramName, BaseCountedPtr<GeneratorBase> value)
 {
-    if (strcasecmp(pParamName, "delay") == 0)
+    if (strcasecmp(paramName.c_str(), "delay") == 0)
     {
         delayGenerator = value;
     }
-    else if (strcasecmp(pParamName, "feedback") == 0)
+    else if (strcasecmp(paramName.c_str(), "feedback") == 0)
     {
         feedbackGainGenerator = value;
     }
     else
-        GeneratorValueTransform::AddInput(pParamName, value);
+        GeneratorValueTransform::AddInput(paramName, value);
 }
 
 void GeneratorFilterComb::Supply(MachineState & machineState, SampleDataBuffer & rDataBuffer, int startSample)

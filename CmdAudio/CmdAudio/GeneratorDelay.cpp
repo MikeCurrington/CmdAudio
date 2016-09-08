@@ -17,22 +17,22 @@ GeneratorDelay::~GeneratorDelay()
 {
 }
 
-void GeneratorDelay::AddInput(const char * pParamName, BaseCountedPtr<GeneratorBase> value)
+void GeneratorDelay::AddInput(const std::string& paramName, BaseCountedPtr<GeneratorBase> value)
 {
-	if (strcasecmp(pParamName, "delay") == 0)
+	if (strcasecmp(paramName.c_str(), "delay") == 0)
 	{
 		this->delayGenerator = value;
 	}
-	else if (strcasecmp(pParamName, "duration") == 0)
+	else if (strcasecmp(paramName.c_str(), "duration") == 0)
 	{
 		this->durationGenerator = value;
 	}
-	else if (strcasecmp(pParamName, "in") == 0)
+	else if (strcasecmp(paramName.c_str(), "in") == 0)
 	{
 		this->sourceGenerator = value;
 	}
 	else
-		GeneratorBase::AddInput(pParamName, value);
+		GeneratorBase::AddInput(paramName, value);
 }
 
 #if 1
@@ -42,7 +42,7 @@ void GeneratorDelay::Supply(MachineState & machineState, SampleDataBuffer & rDat
 	if (outputLength == 0)
 		return;
 
-	if (sourceGenerator != NULL && delayGenerator != NULL && durationGenerator != NULL)
+	if (sourceGenerator && delayGenerator && durationGenerator)
 	{
 		SampleDataBuffer delayDataBuffer(outputLength);
 		SampleDataBuffer durationDataBuffer(outputLength);

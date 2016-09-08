@@ -16,18 +16,18 @@ GeneratorMidiChannel::GeneratorMidiChannel(int sampleRate) : GeneratorBase()
 {
 }
 
-void GeneratorMidiChannel::AddInput(const char * pParamName, BaseCountedPtr<GeneratorBase> value)
+void GeneratorMidiChannel::AddInput(const std::string& paramName, BaseCountedPtr<GeneratorBase> value)
 {
-    if (strcasecmp(pParamName, "Channel") == 0)
+    if (strcasecmp(paramName.c_str(), "Channel") == 0)
     {
         channelGenerator = value;
     }
-    else if (strcasecmp(pParamName, "Component") == 0)
+    else if (strcasecmp(paramName.c_str(), "Component") == 0)
     {
         componentGenerator = value;
     }
     else
-        GeneratorBase::AddInput(pParamName, value);
+        GeneratorBase::AddInput(paramName, value);
 }
 
 void GeneratorMidiChannel::Supply(MachineState & machineState, SampleDataBuffer & rDataBuffer, int startSample)
@@ -38,7 +38,7 @@ void GeneratorMidiChannel::Supply(MachineState & machineState, SampleDataBuffer 
     {
         if (startSample==0)
         {
-            generatorState->m_runningNotes.push_back( new GeneratorInstance( componentGenerator ) );
+            //        generatorState->m_runningNotes.push_back( new GeneratorInstance( componentGenerator ) );
         }
         
         

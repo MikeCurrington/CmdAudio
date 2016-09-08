@@ -14,14 +14,14 @@ GeneratorPinkify::GeneratorPinkify(int sampleRate)
     fprintf(stdout, "new pinkify\n");
 }
 
-void GeneratorPinkify::AddInput(const char * pParamName, BaseCountedPtr<GeneratorBase> value)
+void GeneratorPinkify::AddInput(const std::string& paramName, BaseCountedPtr<GeneratorBase> value)
 {
-    if (strcasecmp(pParamName, "value") == 0)
+    if (strcasecmp(paramName.c_str(), "value") == 0)
     {
         this->valueGenerator = value;
     }
     else
-        GeneratorBase::AddInput(pParamName, value);
+        GeneratorBase::AddInput(paramName, value);
 }
 
 void GeneratorPinkify::Supply(MachineState & machineState, SampleDataBuffer & rDataBuffer, int startSample)

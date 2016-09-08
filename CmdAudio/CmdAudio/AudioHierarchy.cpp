@@ -140,6 +140,18 @@ AudioHierarchy::AudioHierarchy( const YAML::Node config, int sampleRate )
     }
 }
 
+AudioHierarchy::AudioHierarchy( BaseCountedPtr<GeneratorBase> generator, int sampleRate )
+{
+    const std::string & type = "audio";
+    auto outputConstructIt = outputTypeToFunction.map.find(type);
+    if (outputConstructIt != outputTypeToFunction.map.end())
+    {
+        OutputBase * o = outputConstructIt->second(sampleRate);
+        o->AddInput( "source", generator );
+        outputs.insert( std::make_pair("out", o));
+    }
+}
+
 std::pair<std::string, BaseCountedPtr<GeneratorBase>> AudioHierarchy::ParseHierarchy( const YAML::Node & baseNode, int sampleRate )
 {
     const std::string & id = baseNode["Id"].as<std::string>();
@@ -158,8 +170,8 @@ std::pair<std::string, BaseCountedPtr<GeneratorBase>> AudioHierarchy::ParseHiera
         auto generator = generators.find(type);
         if (generator != generators.end())
         {
-            auto parent = static_cast<GeneratorComponent*>( generator->second.Obj() );
-            g = new GeneratorInstance( parent );
+            BaseCountedPtr<GeneratorBase> parent = generator->second;
+            g = new GeneratorInstance( parent.StaticCast<GeneratorComponent>() );
         }
     }
     

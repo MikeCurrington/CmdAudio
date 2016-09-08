@@ -11,9 +11,9 @@ GeneratorArray::~GeneratorArray()
 }
 
 
-void GeneratorArray::AddInput(const char * pParamName, BaseCountedPtr<GeneratorBase> value)
+void GeneratorArray::AddInput(const std::string& paramName, BaseCountedPtr<GeneratorBase> value)
 {
-    generators.insert( std::make_pair(pParamName, value) );
+    generators.insert( std::make_pair(paramName, value) );
     
     //GeneratorBase::AddInput(pParamName, value);
 }

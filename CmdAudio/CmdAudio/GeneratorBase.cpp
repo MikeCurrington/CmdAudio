@@ -9,9 +9,9 @@ GeneratorBase::GeneratorBase() : BaseCounted()
     id = s_nextId++;
 }
 
-void GeneratorBase::AddInput(const char * pParamName, BaseCountedPtr<GeneratorBase> value)
+void GeneratorBase::AddInput(const std::string& paramName, BaseCountedPtr<GeneratorBase> value)
 {
-	fprintf(stderr, "Parameter not recognized: %s\n", pParamName);
+	fprintf(stderr, "Parameter not recognized: %s\n", paramName.c_str());
 }
 
 GeneratorStateBase::GeneratorStateBase(int id) : id(id)

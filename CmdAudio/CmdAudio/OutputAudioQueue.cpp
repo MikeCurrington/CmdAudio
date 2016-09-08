@@ -34,9 +34,9 @@ OutputAudioQueue::~OutputAudioQueue()
 }
 
 
-void OutputAudioQueue::AddInput(const char * pParamName, BaseCountedPtr<GeneratorBase> value)
+void OutputAudioQueue::AddInput(const std::string& paramName, BaseCountedPtr<GeneratorBase> value)
 {
-    if (strcasecmp(pParamName, "source") == 0)
+    if (strcasecmp(paramName.c_str(), "source") == 0)
     {
         this->m_sourceGenerator = value;
     }

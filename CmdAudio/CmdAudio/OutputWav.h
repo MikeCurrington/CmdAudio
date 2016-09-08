@@ -7,7 +7,7 @@ class OutputWav : public OutputBase
 public:
     OutputWav(int sampleRate);
     
-    virtual void AddInput(const char * pParamName, BaseCountedPtr<GeneratorBase> value) override;
+    virtual void AddInput(const std::string& paramName, BaseCountedPtr<GeneratorBase> value) override;
     virtual void Write(MachineState& machineState, int outputLength) override;
     
 protected:

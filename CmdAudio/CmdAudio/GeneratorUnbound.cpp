@@ -13,9 +13,9 @@ GeneratorUnbound::~GeneratorUnbound()
 }
 
 
-void GeneratorUnbound::AddInput(const char * pParamName, BaseCountedPtr<GeneratorBase> value)
+void GeneratorUnbound::AddInput(const std::string& paramName, BaseCountedPtr<GeneratorBase> value)
 {
-    GeneratorBase::AddInput(pParamName, value);
+    GeneratorBase::AddInput(paramName, value);
 }
 
 void GeneratorUnbound::Supply(MachineState & machineState, SampleDataBuffer & rDataBuffer, int startSample)

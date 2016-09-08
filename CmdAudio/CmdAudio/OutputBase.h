@@ -11,7 +11,7 @@ public:
     OutputBase();
     virtual ~OutputBase() = 0;
     
-    virtual void AddInput(const char * pParamName, BaseCountedPtr<GeneratorBase> value) = 0;
+    virtual void AddInput(const std::string& paramName, BaseCountedPtr<GeneratorBase> value) = 0;
     virtual void Write(MachineState& machineState, int outputLength) = 0;
     
 protected:

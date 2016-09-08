@@ -10,22 +10,22 @@ GeneratorLerp::~GeneratorLerp()
 {
 }
 
-void GeneratorLerp::AddInput(const char * pParamName, BaseCountedPtr<GeneratorBase> value)
+void GeneratorLerp::AddInput(const std::string& paramName, BaseCountedPtr<GeneratorBase> value)
 {
-	if (strcasecmp(pParamName, "value") == 0)
+	if (strcasecmp(paramName.c_str(), "value") == 0)
 	{
 		this->valueGenerator = value;
 	}
-	else if (strcasecmp(pParamName, "min") == 0)
+	else if (strcasecmp(paramName.c_str(), "min") == 0)
 	{
 		this->minGenerator = value;
 	}
-	else if (strcasecmp(pParamName, "max") == 0)
+	else if (strcasecmp(paramName.c_str(), "max") == 0)
 	{
 		this->maxGenerator = value;
 	}
 	else
-		GeneratorBase::AddInput(pParamName, value);
+		GeneratorBase::AddInput(paramName, value);
 }
 
 void GeneratorLerp::Supply(MachineState & machineState, SampleDataBuffer & rDataBuffer, int startSample)

@@ -19,9 +19,9 @@ GeneratorComponent::~GeneratorComponent()
 {
 }
 
-void GeneratorComponent::AddInput(const char * pParamName, BaseCountedPtr<GeneratorBase> value)
+void GeneratorComponent::AddInput(const std::string& paramName, BaseCountedPtr<GeneratorBase> value)
 {
-    if (strcasecmp(pParamName, "inputs") == 0)
+    if (strcasecmp(paramName.c_str(), "inputs") == 0)
     {
         GeneratorArray * pArray = dynamic_cast<GeneratorArray*>(value.Obj());
         if (pArray != nullptr)
@@ -29,9 +29,13 @@ void GeneratorComponent::AddInput(const char * pParamName, BaseCountedPtr<Genera
             this->parameters = pArray;
         }
     }
-    else if (strcasecmp(pParamName, "source") == 0)
+    else if (strcasecmp(paramName.c_str(), "source") == 0)
     {
         this->source = value;
+    }
+    else
+    {
+        GeneratorBase::AddInput(paramName, value);
     }
 }
 

@@ -56,6 +56,9 @@ public:
   virtual void enterNamedArg(CmdAudioParser::NamedArgContext *ctx) = 0;
   virtual void exitNamedArg(CmdAudioParser::NamedArgContext *ctx) = 0;
 
+  virtual void enterVarOrExp(CmdAudioParser::VarOrExpContext *ctx) = 0;
+  virtual void exitVarOrExp(CmdAudioParser::VarOrExpContext *ctx) = 0;
+
   virtual void enterVar(CmdAudioParser::VarContext *ctx) = 0;
   virtual void exitVar(CmdAudioParser::VarContext *ctx) = 0;
 

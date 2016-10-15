@@ -23,8 +23,12 @@ protected:
 class GeneratorStateWaveformBase : public GeneratorStateBase
 {
 public:
-    GeneratorStateWaveformBase( int id) : GeneratorStateBase(id)
+    GeneratorStateWaveformBase( int id) : GeneratorStateBase(id), m_phase(0.0f)
     {
     }
+    float GetPhase() const      { return m_phase; }
+    void  SetPhase(float phase) {m_phase = phase; }
+private:
+    float m_phase;
 };
 

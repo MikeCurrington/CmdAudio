@@ -20,4 +20,3 @@ void GeneratorWaveformBase::AddInput(const std::string& paramName, BaseCountedPt
 	else
 		GeneratorBase::AddInput(paramName, value);
 }
-

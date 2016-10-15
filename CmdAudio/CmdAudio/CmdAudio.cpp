@@ -21,8 +21,7 @@
 #include "AudioHierarchyBuilder.h"
 
 #include "antlr4-runtime.h"
-//using namespace antlrcpptest;
-//using namespace antlr4;
+#include <ios>
 
 #include "yaml-cpp/yaml.h"
 
@@ -53,10 +52,15 @@ static GeneratorBase * MakeSineOscillator(int sampleRate, float minValue, float 
 
 BaseCountedPtr<GeneratorBase> LoadProgram( const char * filename, int sampleRate )
 {
-    antlr4::ANTLRInputStream input("generator Main(time) = {\n      \
-                                   state  beep = Sine( time: time );\n         \
-                                   output beep;\n                \
-                                   }");
+    antlr4::ANTLRInputStream input;
+    
+    std::filebuf fb;
+    if (fb.open (filename, std::ios::in))
+    {
+        std::istream is(&fb);
+        input.load( is );
+    }
+
     AudioHierarchyBuilder builder;
     BaseCountedPtr<GeneratorComponent> component = builder.Build( &input );
                                    
@@ -78,7 +82,7 @@ BaseCountedPtr<GeneratorBase> LoadProgram( const char * filename, int sampleRate
      
      generator Main( time ) =
      {
-         state beep = Sine( time=1000 )
+         state beep = Sine( frequency=1000 )
          output beep
      }
      
@@ -125,7 +129,7 @@ int _main(int argc, const char* argv[])
     }
     
 	const int sampleRate = 22050;
-	const float sampleLengthSeconds = 8.0f;
+	const float sampleLengthSeconds = 18.0f;
 	const int outputLength = (int) (sampleRate * sampleLengthSeconds);	// length of sample to generate
 
     MachineState machineState;

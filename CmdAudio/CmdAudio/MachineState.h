@@ -32,7 +32,7 @@ public:
         }
         else
         {
-            fprintf(stdout, "found gen %d\n", generatorId);
+            //            fprintf(stdout, "found gen %d\n", generatorId);
         }
         return state.StaticCast<T>();
     }
@@ -48,11 +48,15 @@ public:
         }
         else
         {
-            fprintf(stdout, "found gen %d\n", generatorId);
+            //            fprintf(stdout, "found gen %d\n", generatorId);
         }
         return state.StaticCast<T>();
     }
     
+    void RemoveGeneratorState( int id )
+    {
+        states.erase( id );
+    }
     
 private:
     BaseCountedPtr<GeneratorStateBase> GetGeneratorState_( int id ) const

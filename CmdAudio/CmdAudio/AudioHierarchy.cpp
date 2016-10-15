@@ -25,6 +25,7 @@
 #include "GeneratorFilterComb.h"
 #include "GeneratorNoise.h"
 #include "GeneratorPinkify.h"
+#include "GeneratorHold.h"
 #include "GeneratorMidiChannel.h"
 
 
@@ -34,14 +35,6 @@
 #include <boost/unordered_map.hpp>
 #include <boost/assign/list_of.hpp>
 using boost::assign::map_list_of;
-
-
-enum eConfigNodeType {
-    Sine,
-    Saw,
-    Lerp,
-    Function
-};
 
 
 AudioHierarchySchema::AudioHierarchySchema( const YAML::Node config )
@@ -76,6 +69,7 @@ AudioHierarchy::GeneratorTypeToConstructor::GeneratorTypeToConstructor() {
     map.insert( tGeneratorToConstructor::value_type(std::string("FilterLadder"), [](int sampleRate) { return new GeneratorFilter();}) );
     map.insert( tGeneratorToConstructor::value_type(std::string("FilterHigh"), [](int sampleRate) { return new GeneratorFilterHigh();}) );
     map.insert( tGeneratorToConstructor::value_type(std::string("FilterComb"), [](int sampleRate) { return new GeneratorFilterComb();}) );
+    map.insert( tGeneratorToConstructor::value_type(std::string("Hold"), [](int sampleRate) { return new GeneratorHold();}) );
     map.insert( tGeneratorToConstructor::value_type(std::string("Noise"), [](int sampleRate) { return new GeneratorNoise(sampleRate);}) );
     map.insert( tGeneratorToConstructor::value_type(std::string("Pinkify"), [](int sampleRate) { return new GeneratorPinkify(sampleRate);}) );
     map.insert( tGeneratorToConstructor::value_type(std::string("MidiChannel"), [](int sampleRate) { return new GeneratorMidiChannel(sampleRate);}) );
@@ -142,13 +136,17 @@ AudioHierarchy::AudioHierarchy( const YAML::Node config, int sampleRate )
 
 AudioHierarchy::AudioHierarchy( BaseCountedPtr<GeneratorBase> generator, int sampleRate )
 {
-    const std::string & type = "audio";
+    const std::string & type = "wav";//"audio";//"wav";//
     auto outputConstructIt = outputTypeToFunction.map.find(type);
     if (outputConstructIt != outputTypeToFunction.map.end())
     {
         OutputBase * o = outputConstructIt->second(sampleRate);
         o->AddInput( "source", generator );
         outputs.insert( std::make_pair("out", o));
+    }
+    else
+    {
+        assert(0);
     }
 }
 

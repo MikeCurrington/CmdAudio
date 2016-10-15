@@ -35,8 +35,21 @@ void OutputWav::Write(MachineState& machineState, int outputLength)
     if (sourceGenerator)
     {
         SampleDataBuffer output(outputLength);
-        sourceGenerator->Supply(machineState, output, 0);
-
+        
+        int offset = 0;
+        int remaining = outputLength;
+        while(remaining > 0)
+        {
+            int chunkLength = 22050;
+            if (chunkLength > remaining)
+                chunkLength = remaining;
+            SampleDataBufferView chunkView(&output, offset, chunkLength);
+            
+            sourceGenerator->Supply(machineState, chunkView, offset);
+            remaining -= chunkLength;
+            offset += chunkLength;
+        }
+        
         wavWriter->Write("samples.wav", output);
     }
 }

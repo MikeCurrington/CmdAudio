@@ -58,6 +58,9 @@ public:
   virtual void enterNamedArg(CmdAudioParser::NamedArgContext * /*ctx*/) override { }
   virtual void exitNamedArg(CmdAudioParser::NamedArgContext * /*ctx*/) override { }
 
+  virtual void enterVarOrExp(CmdAudioParser::VarOrExpContext * /*ctx*/) override { }
+  virtual void exitVarOrExp(CmdAudioParser::VarOrExpContext * /*ctx*/) override { }
+
   virtual void enterVar(CmdAudioParser::VarContext * /*ctx*/) override { }
   virtual void exitVar(CmdAudioParser::VarContext * /*ctx*/) override { }
 

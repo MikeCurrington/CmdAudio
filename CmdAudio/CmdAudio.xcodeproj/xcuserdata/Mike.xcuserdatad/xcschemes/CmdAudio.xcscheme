@@ -63,7 +63,7 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "../../../../../Config/Test1.yaml"
+            argument = "../../../../../Config/Test1.cmdaudio"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument

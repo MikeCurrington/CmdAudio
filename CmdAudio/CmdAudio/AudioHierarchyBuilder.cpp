@@ -37,34 +37,12 @@
 #include "GeneratorFilter.h"
 #include "GeneratorFilterHigh.h"
 #include "GeneratorFilterComb.h"
+#include "GeneratorHold.h"
 #include "GeneratorNoise.h"
 #include "GeneratorPinkify.h"
 #include "GeneratorMidiChannel.h"
 #include "GeneratorUnbound.h"
 
-
-/*
-static GeneratorBase * MakeSineOscillator(int sampleRate, float minValue, float maxValue, float frequency )
-{
-    GeneratorBase * sineGen = new GeneratorSine(sampleRate);
-    GeneratorBase * sineFreqGen = new GeneratorConstant(frequency);
-    sineGen->AddInput("frequency", sineFreqGen);
-    
-    GeneratorBase * rangedValue = new GeneratorLerp();
-    GeneratorBase * maxValueGen = new GeneratorConstant(maxValue);
-    GeneratorBase * minValueGen = new GeneratorConstant(minValue);
-    rangedValue->AddInput("value", sineGen);
-    rangedValue->AddInput("min", minValueGen);
-    rangedValue->AddInput("max", maxValueGen);
-    
-    maxValueGen->Release();
-    minValueGen->Release();
-    sineGen->Release();
-    sineFreqGen->Release();
-    
-    return rangedValue;
-}
-*/
 
 static const int sampleRate = 22050;    ///TODO: remove this
 
@@ -89,9 +67,7 @@ public:
         std::cout << "Generator ";
         auto name = ctx->NAME();
         std::cout << name->toString();
-        auto parameterList = ctx->genparlist();
-        
-        std::cout << " paramcount=" << parameterList->children.size();
+        const auto& parameterList = ctx->genparlist();
         
         auto component = new GeneratorComponent(sampleRate);
         m_components.insert( std::pair<std::string,BaseCountedPtr<GeneratorComponent>>( name->toString(), component ) );
@@ -100,16 +76,38 @@ public:
             m_mainComponent = component;
         }
         m_currentComponent = component;
+
+        std::map< std::string, BaseCountedPtr<GeneratorBase> > generatorComponentStack;
+        generatorComponentStack.insert( std::pair<std::string,BaseCountedPtr<GeneratorBase>>( name->toString(), m_currentComponent.StaticCast<GeneratorBase>() ) );
+        m_componentStack.push_back( generatorComponentStack );
         
-        for(auto i : parameterList->children)
+        if (parameterList)
         {
+            BaseCountedPtr<GeneratorBase> parameterArray = new GeneratorArray();
+            int paramCount = 0;
+            const auto& namelist = parameterList->namelist();
+            for(const auto& parameterNameToken : namelist->NAME())
+            {
+                const auto& parameterName = parameterNameToken->getSymbol()->getText();
+                parameterArray->AddInput( parameterName, nullptr);
+                paramCount++;
+            }
+            m_currentComponent.StaticCast<GeneratorBase>()->AddInput("inputs", parameterArray);
+            std::cout << " paramcount=" << paramCount;
+        }
+        else
+        {
+            std::cout << " paramcount=0";
         }
         std::cout << "\n";
     }
         
     virtual void exitGeneratordef(CmdAudioParser::GeneratordefContext * ctx) override
     {
+        //new   m_currentComponent );
         m_currentComponent = nullptr;
+        m_statementLocalsUsage.clear();
+        m_statementLocals.clear();
         std::cout << "exit gen\n";
     }
         
@@ -122,8 +120,9 @@ public:
         
         BaseCountedPtr<GeneratorBase> statementGenerator = ProcessExpression( expression );
         m_statementLocals.insert( std::pair<std::string,BaseCountedPtr<GeneratorBase>>( name->getText(), statementGenerator ) );
+        m_statementLocalsUsage.insert( std::pair<std::string, int>( name->getText(), 0 ) );
     }
-        
+    
     
     BaseCountedPtr<GeneratorBase>  ProcessExpression( Ref<CmdAudioParser::ExpContext> expression )
     {
@@ -136,19 +135,43 @@ public:
         }
         else if ( expression->prefixexp() )
         {
-            auto prefixExp = expression->prefixexp();
-            if ( prefixExp->var() )
+            const auto& prefixExp = expression->prefixexp();
+            if ( prefixExp->varOrExp() )
             {
-                std::cout << "= var:" << prefixExp->var()->NAME()->getText() << "\n";
+                auto varOrExp = prefixExp->varOrExp();
+                if (varOrExp->var())
+                {
+                    const std::string & varName = varOrExp->var()->NAME()->getText();
+                    std::cout << "= var:" << varName << "\n";
+                    const auto& foundVarIter = m_statementLocals.find(varName);
+                    if ( foundVarIter != m_statementLocals.end() )
+                    {
+                        generator = foundVarIter->second;
+                        m_statementLocalsUsage.find(varName)->second++;
+                    }
+                    else
+                    {
+                        generator = new GeneratorUnbound( varName );
+                    }
+                }
+                else if (varOrExp->exp())
+                {
+                    generator = ProcessExpression( varOrExp->exp() );
+                }
+                else
+                {
+                    std::cout << " not a var or exp\n";
+                    assert(0);
+                }
             }
             else if ( prefixExp->function() )
             {
-                auto func = prefixExp->function();
+                const auto& func = prefixExp->function();
                 std::string funcName = func->NAME()->getText();
                 std::cout << "= function:" << funcName << "\n";
 
                 // See if the function is a known generator
-                auto generatorConstructIt = generatorTypeToConstructor.map.find(funcName);
+                const auto& generatorConstructIt = generatorTypeToConstructor.map.find(funcName);
                 if (generatorConstructIt != generatorTypeToConstructor.map.end())
                 {
                     generator = generatorConstructIt->second(sampleRate);
@@ -165,7 +188,11 @@ public:
                         }
                     }
                 }
-                
+                if (!generator)
+                {
+                    std::cout << "cannot find " << funcName;
+                    assert(0);
+                }
                 
                 // Grab the parameters
                 auto argumentList = prefixExp->namedArgList();
@@ -184,9 +211,53 @@ public:
                 }
             }
         }
+        else if (expression->operatorMulDiv())
+        {
+            auto muldiv = expression->operatorMulDiv();
+            if ( muldiv->getText() == "*" )
+                std::cout << " mult\n";
+            else
+                std::cout << " div\n";
+            BaseCountedPtr<GeneratorBase> multArrayGenerator = new GeneratorArray();
+            int paramCount = 0;
+            
+            for( const auto& exp : expression->exp() )
+            {
+                BaseCountedPtr<GeneratorBase> multParamGenerator = ProcessExpression( exp );
+                multArrayGenerator->AddInput( std::to_string(paramCount), multParamGenerator);
+                paramCount++;
+            }
+            
+            BaseCountedPtr<GeneratorMultiply> multGenerator = new GeneratorMultiply();
+            multGenerator->AddInput("in", multArrayGenerator.StaticCast<GeneratorBase>());
+            
+            generator = multGenerator.StaticCast<GeneratorBase>();
+        }
+        else if (expression->operatorAddSub())
+        {
+            auto addsub = expression->operatorAddSub();
+            if ( addsub->getText() == "+" )
+                std::cout << " add\n";
+            else
+                std::cout << " sub\n";
+            BaseCountedPtr<GeneratorBase> addArrayGenerator = new GeneratorArray();
+            int paramCount = 0;
+            
+            for( const auto& exp : expression->exp() )
+            {
+                BaseCountedPtr<GeneratorBase> addParamGenerator = ProcessExpression( exp );
+                addArrayGenerator->AddInput( std::to_string(paramCount), addParamGenerator);
+                paramCount++;
+            }
+            
+            BaseCountedPtr<GeneratorAdd> addGenerator = new GeneratorAdd();
+            addGenerator->AddInput("in", addArrayGenerator.StaticCast<GeneratorBase>());
+            
+            generator = addGenerator.StaticCast<GeneratorBase>();
+        }
         else
         {
-            std::cout << "unknown right side of stat\n";
+            std::cout << " unknown right side of stat\n";
             assert(0);
         }
         return generator;
@@ -202,16 +273,25 @@ public:
         std::cout << ctx->getText();
         auto outputExp = ctx->exp();
         auto outputPrefixExp = outputExp->prefixexp();
-        auto outputPrefixExpVar = outputPrefixExp->var();
-        auto varName = outputPrefixExpVar->NAME()->getText();
-        auto foundStatementIt = m_statementLocals.find(varName);
-        if (foundStatementIt != m_statementLocals.end())
+        auto outputPrefixExpVarOrExp = outputPrefixExp->varOrExp();
+        if (outputPrefixExpVarOrExp->var())
         {
-            m_currentComponent.StaticCast<GeneratorBase>()->AddInput( "source", foundStatementIt->second );
+            const auto& varName = outputPrefixExpVarOrExp->var()->NAME()->getText();
+            auto foundStatementIt = m_statementLocals.find(varName);
+            if (foundStatementIt != m_statementLocals.end())
+            {
+                m_currentComponent.StaticCast<GeneratorBase>()->AddInput( "source", foundStatementIt->second );
+                m_statementLocalsUsage.find(varName)->second++;
+            }
+            else
+            {
+                std::cout << "output cannot find variable " << varName;
+                assert(0);
+            }
         }
         else
         {
-            assert(0);
+            m_currentComponent.StaticCast<GeneratorBase>()->AddInput( "source", ProcessExpression( outputPrefixExpVarOrExp->exp() ) );
         }
     }
 
@@ -222,6 +302,7 @@ private:
     BaseCountedPtr<GeneratorComponent> m_currentComponent;
     //BaseCountedPtr<GeneratorBase> m_statementGenerator;
     std::unordered_map<std::string, BaseCountedPtr<GeneratorBase>> m_statementLocals;
+    std::unordered_map<std::string, int> m_statementLocalsUsage;
         
 protected:
     BaseCountedPtr<GeneratorComponent> m_mainComponent;
@@ -247,6 +328,7 @@ CmdAudioListenerImpl::GeneratorTypeToConstructor::GeneratorTypeToConstructor() {
     map.insert( tGeneratorToConstructor::value_type(std::string("FilterLadder"), [](int sampleRate) { return new GeneratorFilter();}) );
     map.insert( tGeneratorToConstructor::value_type(std::string("FilterHigh"), [](int sampleRate) { return new GeneratorFilterHigh();}) );
     map.insert( tGeneratorToConstructor::value_type(std::string("FilterComb"), [](int sampleRate) { return new GeneratorFilterComb();}) );
+    map.insert( tGeneratorToConstructor::value_type(std::string("Hold"), [](int sampleRate) { return new GeneratorHold();}) );
     map.insert( tGeneratorToConstructor::value_type(std::string("Noise"), [](int sampleRate) { return new GeneratorNoise(sampleRate);}) );
     map.insert( tGeneratorToConstructor::value_type(std::string("Pinkify"), [](int sampleRate) { return new GeneratorPinkify(sampleRate);}) );
     map.insert( tGeneratorToConstructor::value_type(std::string("MidiChannel"), [](int sampleRate) { return new GeneratorMidiChannel(sampleRate);}) );

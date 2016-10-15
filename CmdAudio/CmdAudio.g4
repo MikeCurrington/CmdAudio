@@ -5,7 +5,7 @@ chunk
     ;
 
 generatordef
-    : 'generator' NAME '(' genparlist ')' '=' '{' block '}'
+    : 'generator' NAME '(' genparlist? ')' '=' '{' block '}'
     ;
 
 genparlist
@@ -46,7 +46,7 @@ number
 
 prefixexp
     : function '(' namedArgList? ')'
-    | var
+    | varOrExp
     ;
 
 function
@@ -59,6 +59,10 @@ namedArgList
 
 namedArg
     : var ':' exp
+    ;
+
+varOrExp
+    : var | '(' exp ')'
     ;
 
 var

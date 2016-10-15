@@ -24,8 +24,8 @@ public:
     RuleChunk = 0, RuleGeneratordef = 1, RuleGenparlist = 2, RuleNamelist = 3, 
     RuleBlock = 4, RuleStat = 5, RuleOutputstat = 6, RuleExplist = 7, RuleExp = 8, 
     RuleNumber = 9, RulePrefixexp = 10, RuleFunction = 11, RuleNamedArgList = 12, 
-    RuleNamedArg = 13, RuleVar = 14, RuleNameAndArgs = 15, RuleArgs = 16, 
-    RuleOperatorUnary = 17, RuleOperatorMulDiv = 18, RuleOperatorAddSub = 19
+    RuleNamedArg = 13, RuleVarOrExp = 14, RuleVar = 15, RuleNameAndArgs = 16, 
+    RuleArgs = 17, RuleOperatorUnary = 18, RuleOperatorMulDiv = 19, RuleOperatorAddSub = 20
   };
 
   CmdAudioParser(TokenStream *input);
@@ -52,6 +52,7 @@ public:
   class FunctionContext;
   class NamedArgListContext;
   class NamedArgContext;
+  class VarOrExpContext;
   class VarContext;
   class NameAndArgsContext;
   class ArgsContext;
@@ -79,8 +80,8 @@ public:
     GeneratordefContext(std::weak_ptr<ParserRuleContext> parent, int invokingState);
     virtual ssize_t getRuleIndex() const override;
     Ref<tree::TerminalNode> NAME();
-    Ref<GenparlistContext> genparlist();
     Ref<BlockContext> block();
+    Ref<GenparlistContext> genparlist();
 
     virtual void enterRule(tree::ParseTreeListener *listener) override;
     virtual void exitRule(tree::ParseTreeListener *listener) override;
@@ -213,7 +214,7 @@ public:
     virtual ssize_t getRuleIndex() const override;
     Ref<FunctionContext> function();
     Ref<NamedArgListContext> namedArgList();
-    Ref<VarContext> var();
+    Ref<VarOrExpContext> varOrExp();
 
     virtual void enterRule(tree::ParseTreeListener *listener) override;
     virtual void exitRule(tree::ParseTreeListener *listener) override;
@@ -262,6 +263,20 @@ public:
   };
 
   Ref<NamedArgContext> namedArg();
+
+  class VarOrExpContext : public ParserRuleContext {
+  public:
+    VarOrExpContext(std::weak_ptr<ParserRuleContext> parent, int invokingState);
+    virtual ssize_t getRuleIndex() const override;
+    Ref<VarContext> var();
+    Ref<ExpContext> exp();
+
+    virtual void enterRule(tree::ParseTreeListener *listener) override;
+    virtual void exitRule(tree::ParseTreeListener *listener) override;
+   
+  };
+
+  Ref<VarOrExpContext> varOrExp();
 
   class VarContext : public ParserRuleContext {
   public:

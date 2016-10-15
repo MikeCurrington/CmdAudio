@@ -1,7 +1,7 @@
 //
 //  GeneratorFilter.cpp
 //  CmdAudio
-// Karlsen Fast Ladder filter : http://www.musicdsp.org/archive.php?classid=3
+//  Karlsen Fast Ladder filter : http://www.musicdsp.org/archive.php?classid=3
 //
 //  Created by Michael Currington on 7/30/16.
 //  Copyright © 2016 Doodleoo Games. All rights reserved.

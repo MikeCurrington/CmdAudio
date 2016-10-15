@@ -49,32 +49,38 @@ void GeneratorDelay::Supply(MachineState & machineState, SampleDataBuffer & rDat
 		delayGenerator->Supply(machineState, delayDataBuffer, startSample);
 		durationGenerator->Supply(machineState, durationDataBuffer, startSample);
 
-        int minDelay = 0, maxDelay = 0;
+        int minSample = 0, maxSample = -1;
         if (outputLength>0)
         {
-            maxDelay = delayDataBuffer[0] + startSample;
-            minDelay = 0;
+            maxSample = -1;
+            minSample = MAX_BUFFERSIZE;
         }
         for (int i=0; i < outputLength; i++)
         {
-            int delay = -delayDataBuffer[i] + startSample + i;
-            maxDelay = max(delay, maxDelay);
-            minDelay = max( min(delay, minDelay), 0 );
+            int sample = -delayDataBuffer[i] + startSample + i;
+            maxSample = max(sample, maxSample);
+            minSample = max(min(sample, minSample),0);
         }
         
-        int sourceLength = maxDelay - minDelay;
-        if (sourceLength < 0)
-            sourceLength = -sourceLength;
+        int sourceLength = maxSample - minSample + 1;   // max sample is inclusive
+        //if (sourceLength < 0)
+        //    sourceLength = -sourceLength;
         if (sourceLength > MAX_BUFFERSIZE)
             return;
+        if (maxSample < 0)
+        {
+            rDataBuffer.Clear();
+            return;
+        }
+            
         
         // Now we know how much data we need we can request it!
         SampleDataBuffer sourceDataBuffer(sourceLength);
-        sourceGenerator->Supply(machineState, sourceDataBuffer, minDelay);
+        sourceGenerator->Supply(machineState, sourceDataBuffer, minSample);
         
         for(int i=0;i<outputLength;i++)
         {
-            int delay = -delayDataBuffer[i] + startSample + i;
+            int delay = -delayDataBuffer[i] + startSample - minSample + i;
             if (delay < 0)
             {
                 rDataBuffer[i] = 0.0f;

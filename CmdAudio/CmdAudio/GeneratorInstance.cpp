@@ -20,25 +20,85 @@ GeneratorInstance::GeneratorInstance( BaseCountedPtr<GeneratorComponent> compone
 void GeneratorInstance::AddInput(const std::string& paramName, BaseCountedPtr<GeneratorBase> value)
 {
     fprintf(stderr, "input instance: %s\n", paramName.c_str());
-    
-    m_inputs->AddInput(paramName, value );
+
+    if (strcasecmp(paramName.c_str(), "reset") == 0)
+    {
+        m_resetGenerator = value;
+    }
+    else
+    {
+        m_inputs->AddInput(paramName, value );
+    }
 }
 
 void GeneratorInstance::Supply(MachineState & machineState, SampleDataBuffer & rDataBuffer, int startSample)
 {
     BaseCountedPtr<GeneratorStateInstance> generatorState = machineState.GetGeneratorState<GeneratorStateInstance>( GetId(), machineState );
-
-    //    fprintf(stderr, "supply instance\n");
-
-    generatorState->m_machineState->PushParameters(m_inputs);
     
-    m_component->Supply(this, *generatorState->m_machineState, rDataBuffer, startSample);
+    bool running = generatorState->m_running;
+    int startOffset = 0;
+    int instanceStartSample = generatorState->m_instanceStartSample;
     
-    generatorState->m_machineState->PopParameters();
+    if (m_resetGenerator)
+    {
+        SampleDataBuffer* resetDataBuffer = new SampleDataBuffer(rDataBuffer.GetLength());
+        m_resetGenerator->Supply(machineState, *resetDataBuffer, startSample);
+
+        for(int i=0;i<rDataBuffer.GetLength(); i++)
+        {
+            if (resetDataBuffer->Get(i) > 0.0f)
+            {
+                // greater than zero is a trigger
+                if (!running)
+                {
+                    startOffset = i;
+                    instanceStartSample = 0;
+                    running = true;
+                }
+            }
+            else if (running)
+            {
+                running = false;
+                int length = i - startOffset;
+                if (length > 0)
+                {
+                    SampleDataBufferView rSubBuffer(&rDataBuffer, startOffset, length );
+                    generatorState->m_machineState->PushParameters(m_inputs);
+                    m_component->Supply(this, *generatorState->m_machineState, rSubBuffer, instanceStartSample);
+                    instanceStartSample += length;
+                    generatorState->m_machineState->PopParameters();
+                }
+                // we need to reset the generator ready for when retriggered
+                machineState.RemoveGeneratorState( GetId() );
+                generatorState = machineState.GetGeneratorState<GeneratorStateInstance>( GetId(), machineState );
+            }
+            else
+            {
+                rDataBuffer.Get(i) = 0.0f;
+            }
+        }
+        delete resetDataBuffer;
+    }
+    if (running)
+    {
+        // fill in the remaining samples up to the end of the current buffer
+        int length = rDataBuffer.GetLength() - startOffset;
+        if (length > 0)
+        {
+            SampleDataBufferView rSubBuffer(&rDataBuffer, startOffset, length );
+            generatorState->m_machineState->PushParameters(m_inputs);
+            m_component->Supply(this, *generatorState->m_machineState, rSubBuffer, instanceStartSample);
+            instanceStartSample += length;
+            generatorState->m_machineState->PopParameters();
+        }
+    }
+
+    generatorState->m_running = running;
+    generatorState->m_instanceStartSample = instanceStartSample;
 }
 
 
-GeneratorStateInstance::GeneratorStateInstance(int id, MachineState& parentMachineState) : GeneratorStateBase(id)
+GeneratorStateInstance::GeneratorStateInstance(int id, MachineState& parentMachineState) : GeneratorStateBase(id), m_running(true), m_instanceStartSample(0)
 {
     m_machineState = new MachineState( parentMachineState );
 }

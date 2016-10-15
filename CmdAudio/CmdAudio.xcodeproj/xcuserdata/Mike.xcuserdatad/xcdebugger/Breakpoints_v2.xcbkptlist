@@ -25,54 +25,6 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "CmdAudio/GeneratorDelay.cpp"
-            timestampString = "491324062.051173"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "72"
-            endingLineNumber = "72"
-            landmarkName = "GeneratorDelay::Supply(MachineState &amp; machineState, SampleDataBuffer &amp; rDataBuffer, int startSample)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "CmdAudio/GeneratorDelay.cpp"
-            timestampString = "491324078.600069"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "68"
-            endingLineNumber = "68"
-            landmarkName = "GeneratorDelay::Supply(MachineState &amp; machineState, SampleDataBuffer &amp; rDataBuffer, int startSample)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "CmdAudio/GeneratorDelay.cpp"
-            timestampString = "491327279.436167"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "84"
-            endingLineNumber = "84"
-            landmarkName = "GeneratorDelay::Supply(MachineState &amp; machineState, SampleDataBuffer &amp; rDataBuffer, int startSample)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "CmdAudio/OutputAudioQueue.cpp"
             timestampString = "492587088.651261"
             startingColumnNumber = "9223372036854775807"
@@ -89,13 +41,13 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "CmdAudio/SampleDataBuffer.cpp"
-            timestampString = "492590711.892076"
+            filePath = "CmdAudio/GeneratorSaw.cpp"
+            timestampString = "497394390.349726"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "7"
-            endingLineNumber = "7"
-            landmarkName = "SampleDataBuffer::SampleDataBuffer(int length)"
+            startingLineNumber = "17"
+            endingLineNumber = "17"
+            landmarkName = "GeneratorSaw::Supply(MachineState &amp; machineState, SampleDataBuffer &amp; rDataBuffer, int startSample)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -105,13 +57,45 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "CmdAudio/SampleDataBuffer.cpp"
-            timestampString = "492591122.564445"
+            filePath = "CmdAudio/AudioHierarchyBuilder.cpp"
+            timestampString = "498236537.675957"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "13"
-            endingLineNumber = "13"
-            landmarkName = "SampleDataBuffer::~SampleDataBuffer()"
+            startingLineNumber = "181"
+            endingLineNumber = "181"
+            landmarkName = "class CmdAudioListenerImpl"
+            landmarkType = "3">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "CmdAudio/SampleDataBuffer.cpp"
+            timestampString = "497429557.143179"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "24"
+            endingLineNumber = "24"
+            landmarkName = "SampleDataBufferView::SampleDataBufferView( SampleDataBuffer * buffer, int startOffset, int length )"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "CmdAudio/SampleDataBuffer.cpp"
+            timestampString = "497429558.843738"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "29"
+            endingLineNumber = "29"
+            landmarkName = "SampleDataBufferView::SampleDataBufferView( SampleDataBuffer * buffer, int startOffset, int length )"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -121,13 +105,45 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "CmdAudio/GeneratorPulse.cpp"
-            timestampString = "493410102.96275"
+            filePath = "CmdAudio/GeneratorInstance.cpp"
+            timestampString = "497942960.285382"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "16"
-            endingLineNumber = "16"
-            landmarkName = "GeneratorPulse::Supply(MachineState &amp; machineState, SampleDataBuffer &amp; rDataBuffer, int startSample)"
+            startingLineNumber = "77"
+            endingLineNumber = "77"
+            landmarkName = "GeneratorInstance::Supply(MachineState &amp; machineState, SampleDataBuffer &amp; rDataBuffer, int startSample)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "CmdAudio/GeneratorInstance.cpp"
+            timestampString = "497942960.285382"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "72"
+            endingLineNumber = "72"
+            landmarkName = "GeneratorInstance::Supply(MachineState &amp; machineState, SampleDataBuffer &amp; rDataBuffer, int startSample)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "CmdAudio/GeneratorSine.cpp"
+            timestampString = "498119005.245694"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "24"
+            endingLineNumber = "24"
+            landmarkName = "GeneratorSine::Supply(MachineState &amp; machineState, SampleDataBuffer &amp; rDataBuffer, int startSample)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

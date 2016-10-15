@@ -25,6 +25,7 @@ protected:
 protected:
     BaseCountedPtr<GeneratorComponent> m_component;
     BaseCountedPtr<GeneratorArray> m_inputs;
+    BaseCountedPtr<GeneratorBase> m_resetGenerator;
 };
 
 class GeneratorStateInstance : public GeneratorStateBase
@@ -34,5 +35,9 @@ public:
     ~GeneratorStateInstance();
 protected:
     friend class GeneratorInstance;
+    
+    bool m_running;
+    int m_instanceStartSample;
+    
     MachineState* m_machineState;
 };

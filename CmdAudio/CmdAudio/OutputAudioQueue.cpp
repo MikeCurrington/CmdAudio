@@ -15,8 +15,8 @@
 #include <CoreFoundation/CFRunLoop.h>
 
 #define SAMPLE_RATE 22050
-#define BUFFER_SIZE 4096
-#define NUM_BUFFERS 8
+#define BUFFER_SIZE 1024
+#define NUM_BUFFERS 4
 
 
 OutputAudioQueue::OutputAudioQueue(int sampleRate)

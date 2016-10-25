@@ -30,7 +30,6 @@ OutputAudioQueue::OutputAudioQueue(int sampleRate)
 
 OutputAudioQueue::~OutputAudioQueue()
 {
-    delete m_output;
 }
 
 
@@ -106,12 +105,11 @@ bool OutputAudioQueue::FillBuffer( AudioQueueBufferRef buffer )
 {
     int bufferLength = buffer->mAudioDataByteSize/sizeof(short);
 
-    if (m_output == nullptr || bufferLength != m_output->GetLength() )
+    if ( !m_output || bufferLength != m_output->GetLength() )
     {
-        delete m_output;
         m_output = new SampleDataBuffer(bufferLength);
     }
-    m_sourceGenerator->Supply(m_machineState, *m_output, m_currentSampleOffset);
+    m_sourceGenerator->Supply(m_machineState, m_output, m_currentSampleOffset);
     
     short* casted_buffer = static_cast<short*>(buffer->mAudioData);
     

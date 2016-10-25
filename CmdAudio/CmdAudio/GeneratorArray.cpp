@@ -18,7 +18,7 @@ void GeneratorArray::AddInput(const std::string& paramName, BaseCountedPtr<Gener
     //GeneratorBase::AddInput(pParamName, value);
 }
 
-void GeneratorArray::Supply(MachineState & machineState, SampleDataBuffer & rDataBuffer, int startSample)
+void GeneratorArray::Supply(MachineState& machineState, BaseCountedPtr<SampleDataBuffer>& rDataBuffer, int startSample)
 {
     assert(0 && "Unbound variable remaining");
 }

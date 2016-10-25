@@ -11,6 +11,7 @@
 #include "GeneratorSine.h"
 #include "GeneratorSaw.h"
 #include "GeneratorLerp.h"
+#include "GeneratorThreshold.h"
 #include "GeneratorDelay.h"
 #include "GeneratorComponent.h"
 #include "GeneratorInstance.h"
@@ -37,29 +38,11 @@
 using boost::assign::map_list_of;
 
 
-AudioHierarchySchema::AudioHierarchySchema( const YAML::Node config )
-{
-    auto definitionNodes = config["Definitions"];
-    if (definitionNodes)
-    {
-        for( auto it=definitionNodes.begin(); it!=definitionNodes.end(); ++it )
-        {
-            if (it->IsMap())
-            {
-                const std::string & name = (*it)["Id"].as<std::string>();
-                const std::string & type = (*it)["Type"].as<std::string>();
-                
-            }
-        }
-    }
-    
-}
-
-
 AudioHierarchy::GeneratorTypeToConstructor::GeneratorTypeToConstructor() {
     map.insert( tGeneratorToConstructor::value_type(std::string("Sine"), [](int sampleRate) { return new GeneratorSine(sampleRate);}) );
     map.insert( tGeneratorToConstructor::value_type(std::string("Saw"), [](int sampleRate) { return new GeneratorSaw(sampleRate);}) );
     map.insert( tGeneratorToConstructor::value_type(std::string("Lerp"), [](int sampleRate) { return new GeneratorLerp();}) );
+    map.insert( tGeneratorToConstructor::value_type(std::string("Threshold"), [](int sampleRate) { return new GeneratorThreshold();}) );
     map.insert( tGeneratorToConstructor::value_type(std::string("Delay"), [](int sampleRate) { return new GeneratorDelay();}) );
     map.insert( tGeneratorToConstructor::value_type(std::string("Multiply"), [](int sampleRate) { return new GeneratorMultiply();}) );
     map.insert( tGeneratorToConstructor::value_type(std::string("Add"), [](int sampleRate) { return new GeneratorAdd();}) );
@@ -73,7 +56,6 @@ AudioHierarchy::GeneratorTypeToConstructor::GeneratorTypeToConstructor() {
     map.insert( tGeneratorToConstructor::value_type(std::string("Noise"), [](int sampleRate) { return new GeneratorNoise(sampleRate);}) );
     map.insert( tGeneratorToConstructor::value_type(std::string("Pinkify"), [](int sampleRate) { return new GeneratorPinkify(sampleRate);}) );
     map.insert( tGeneratorToConstructor::value_type(std::string("MidiChannel"), [](int sampleRate) { return new GeneratorMidiChannel(sampleRate);}) );
-    
 
     map.insert( tGeneratorToConstructor::value_type(std::string("Component"), [](int sampleRate) { return new GeneratorComponent(sampleRate);}) );
 }
@@ -136,7 +118,7 @@ AudioHierarchy::AudioHierarchy( const YAML::Node config, int sampleRate )
 
 AudioHierarchy::AudioHierarchy( BaseCountedPtr<GeneratorBase> generator, int sampleRate )
 {
-    const std::string & type = "wav";//"audio";//"wav";//
+    const std::string & type = "audio";//"audio";//"wav";//
     auto outputConstructIt = outputTypeToFunction.map.find(type);
     if (outputConstructIt != outputTypeToFunction.map.end())
     {

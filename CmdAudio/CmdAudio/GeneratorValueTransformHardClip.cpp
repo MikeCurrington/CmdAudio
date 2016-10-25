@@ -22,7 +22,7 @@ void GeneratorValueTransformHardClip::AddInput(const std::string& paramName, Bas
 		GeneratorValueTransform::AddInput(paramName, value);
 }
 
-void GeneratorValueTransformHardClip::Supply(MachineState & machineState, SampleDataBuffer & rDataBuffer, int startSample)
+void GeneratorValueTransformHardClip::Supply(MachineState& machineState, BaseCountedPtr<SampleDataBuffer>& rDataBuffer, int startSample)
 {
 	if (sourceBuffer)
 	{
@@ -30,18 +30,18 @@ void GeneratorValueTransformHardClip::Supply(MachineState & machineState, Sample
 
 		if (clip)
 		{
-			SampleDataBuffer clipDataBuffer(rDataBuffer.GetLength());
+			BaseCountedPtr<SampleDataBuffer> clipDataBuffer( new SampleDataBuffer(rDataBuffer->GetLength()) );
 			clip->Supply(machineState, clipDataBuffer, startSample);
 
-			for (int i = 0; i < rDataBuffer.GetLength(); i++)
+			for (int i = 0; i < rDataBuffer->GetLength(); i++)
 			{
-                float f = rDataBuffer[i];
-                float clipf = clipDataBuffer[i];
+                float f = rDataBuffer->Get(i);
+                float clipf = clipDataBuffer->Get(i);
                 if (f > clipf)
                 	f = clipf;
                 else if (f < -clipf)
                 	f = -clipf;
-				rDataBuffer[i] = f;
+				rDataBuffer->Get(i) = f;
 			}
 		}
 	}

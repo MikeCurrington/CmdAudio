@@ -19,7 +19,7 @@ public:
     virtual void AddInput(const std::string& paramName, BaseCountedPtr<GeneratorBase> value) override;
     
 protected:
-    virtual void Supply(MachineState & machineState, SampleDataBuffer & rDataBuffer, int startSample) override;
+    virtual void Supply(MachineState& machineState, BaseCountedPtr<SampleDataBuffer>& rDataBuffer, int startSample) override;
 
     BaseCountedPtr<GeneratorBase> generators;
 };

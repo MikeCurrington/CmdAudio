@@ -11,7 +11,7 @@ public:
 
 protected:
 	~GeneratorConstant();
-	virtual void Supply(MachineState & machineState, SampleDataBuffer & rDataBuffer, int startSample) override;
+	virtual void Supply(MachineState& machineState, BaseCountedPtr<SampleDataBuffer>& rDataBuffer, int startSample) override;
 
 private:
 	float fValue;

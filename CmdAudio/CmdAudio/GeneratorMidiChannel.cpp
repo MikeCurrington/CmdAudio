@@ -30,7 +30,7 @@ void GeneratorMidiChannel::AddInput(const std::string& paramName, BaseCountedPtr
         GeneratorBase::AddInput(paramName, value);
 }
 
-void GeneratorMidiChannel::Supply(MachineState & machineState, SampleDataBuffer & rDataBuffer, int startSample)
+void GeneratorMidiChannel::Supply(MachineState& machineState, BaseCountedPtr<SampleDataBuffer>& rDataBuffer, int startSample)
 {
     BaseCountedPtr<GeneratorStateMidiChannel> generatorState = machineState.GetGeneratorState<GeneratorStateMidiChannel>( GetId() );
     

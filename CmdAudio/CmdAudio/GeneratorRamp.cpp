@@ -4,26 +4,7 @@
 #include "MachineState.h"
 
 
-GeneratorRamp::GeneratorRamp(int sampleRate) : sampleRate(sampleRate), timeGenerator(NULL)
-{
-}
-
-GeneratorRamp::~GeneratorRamp()
-{
-}
-
-void GeneratorRamp::AddInput(const std::string& paramName, BaseCountedPtr<GeneratorBase> value)
-{
-	if (strcasecmp(paramName.c_str(), "Time") == 0)
-	{
-		this->timeGenerator = value;
-	}
-	else
-		GeneratorBase::AddInput(paramName, value);
-}
-
-
-void GeneratorRamp::Supply(MachineState & machineState, SampleDataBuffer & rDataBuffer, int startSample)
+void GeneratorRamp::Supply(MachineState& machineState, BaseCountedPtr<SampleDataBuffer>& rDataBuffer, int startSample)
 {
     BaseCountedPtr<GeneratorStateRamp> generatorState = machineState.GetGeneratorState<GeneratorStateRamp>( GetId() );
     
@@ -35,14 +16,14 @@ void GeneratorRamp::Supply(MachineState & machineState, SampleDataBuffer & rData
 
         float fInvSampleRate = 1.0f / fSampleRate;
         float value = generatorState->m_phase;
-        for (int i = 0; i < rDataBuffer.GetLength(); i++)
+        for (int i = 0; i < rDataBuffer->GetLength(); i++)
 		{
-			float nextValue = value + fInvSampleRate / rDataBuffer[i];
+			float nextValue = value + fInvSampleRate / rDataBuffer->Get(i);
 			if (value > 1.0f)
 				value = 1.0f;
 			else if (value < 0.0f)
 				value = 0.0f;
-			rDataBuffer[i] = value*2.0f - 1.0f;
+			rDataBuffer->Get(i) = value;
 
 			value = nextValue;
 		}

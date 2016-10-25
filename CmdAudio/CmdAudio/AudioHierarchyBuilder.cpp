@@ -25,6 +25,7 @@
 #include "GeneratorSine.h"
 #include "GeneratorSaw.h"
 #include "GeneratorLerp.h"
+#include "GeneratorThreshold.h"
 #include "GeneratorDelay.h"
 #include "GeneratorComponent.h"
 #include "GeneratorInstance.h"
@@ -42,6 +43,8 @@
 #include "GeneratorPinkify.h"
 #include "GeneratorMidiChannel.h"
 #include "GeneratorUnbound.h"
+#include "GeneratorStatement.h"
+#include "GeneratorRef.h"
 
 
 static const int sampleRate = 22050;    ///TODO: remove this
@@ -118,8 +121,8 @@ public:
         
         Ref<CmdAudioParser::ExpContext> expression = ctx->exp();
         
-        BaseCountedPtr<GeneratorBase> statementGenerator = ProcessExpression( expression );
-        m_statementLocals.insert( std::pair<std::string,BaseCountedPtr<GeneratorBase>>( name->getText(), statementGenerator ) );
+        BaseCountedPtr<GeneratorStatement> statementGenerator = new GeneratorStatement( ProcessExpression( expression ) );
+        m_statementLocals.insert( std::pair<std::string,BaseCountedPtr<GeneratorStatement>>( name->getText(), statementGenerator ) );
         m_statementLocalsUsage.insert( std::pair<std::string, int>( name->getText(), 0 ) );
     }
     
@@ -146,7 +149,7 @@ public:
                     const auto& foundVarIter = m_statementLocals.find(varName);
                     if ( foundVarIter != m_statementLocals.end() )
                     {
-                        generator = foundVarIter->second;
+                        generator = foundVarIter->second.StaticCast<GeneratorBase>();
                         m_statementLocalsUsage.find(varName)->second++;
                     }
                     else
@@ -280,7 +283,7 @@ public:
             auto foundStatementIt = m_statementLocals.find(varName);
             if (foundStatementIt != m_statementLocals.end())
             {
-                m_currentComponent.StaticCast<GeneratorBase>()->AddInput( "source", foundStatementIt->second );
+                m_currentComponent.StaticCast<GeneratorBase>()->AddInput( "source", foundStatementIt->second.StaticCast<GeneratorBase>() );
                 m_statementLocalsUsage.find(varName)->second++;
             }
             else
@@ -301,7 +304,7 @@ public:
 private:
     BaseCountedPtr<GeneratorComponent> m_currentComponent;
     //BaseCountedPtr<GeneratorBase> m_statementGenerator;
-    std::unordered_map<std::string, BaseCountedPtr<GeneratorBase>> m_statementLocals;
+    std::unordered_map<std::string, BaseCountedPtr<GeneratorStatement>> m_statementLocals;
     std::unordered_map<std::string, int> m_statementLocalsUsage;
         
 protected:
@@ -319,6 +322,7 @@ CmdAudioListenerImpl::GeneratorTypeToConstructor::GeneratorTypeToConstructor() {
     map.insert( tGeneratorToConstructor::value_type(std::string("Sine"), [](int sampleRate) { return new GeneratorSine(sampleRate);}) );
     map.insert( tGeneratorToConstructor::value_type(std::string("Saw"), [](int sampleRate) { return new GeneratorSaw(sampleRate);}) );
     map.insert( tGeneratorToConstructor::value_type(std::string("Lerp"), [](int sampleRate) { return new GeneratorLerp();}) );
+    map.insert( tGeneratorToConstructor::value_type(std::string("Threshold"), [](int sampleRate) { return new GeneratorThreshold();}) );
     map.insert( tGeneratorToConstructor::value_type(std::string("Delay"), [](int sampleRate) { return new GeneratorDelay();}) );
     map.insert( tGeneratorToConstructor::value_type(std::string("Multiply"), [](int sampleRate) { return new GeneratorMultiply();}) );
     map.insert( tGeneratorToConstructor::value_type(std::string("Add"), [](int sampleRate) { return new GeneratorAdd();}) );

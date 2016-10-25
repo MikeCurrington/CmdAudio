@@ -26,7 +26,7 @@ void GeneratorFilter::AddInput(const std::string& paramName, BaseCountedPtr<Gene
 {
     if (strcasecmp(paramName.c_str(), "frequency") == 0)
     {
-        frequencyGenerator = value;
+        m_frequencyGenerator = value;
     }
     else if (strcasecmp(paramName.c_str(), "resonance") == 0)
     {
@@ -53,22 +53,22 @@ float filt(float b_in, float cutFreqNorm, float rez, float& b_buf1, float& b_buf
     return b_buf4;
 }
 
-void GeneratorFilter::Supply(MachineState & machineState, SampleDataBuffer & rDataBuffer, int startSample)
+void GeneratorFilter::Supply(MachineState& machineState, BaseCountedPtr<SampleDataBuffer>& rDataBuffer, int startSample)
 {
     BaseCountedPtr<GeneratorStateFilter> generatorState = machineState.GetGeneratorState<GeneratorStateFilter>( GetId() );
     
-    if (sourceBuffer && frequencyGenerator)
+    if (sourceBuffer && m_frequencyGenerator)
     {
         sourceBuffer->Supply(machineState, rDataBuffer, startSample);
         
-        SampleDataBuffer freqDataBuffer(rDataBuffer.GetLength());
-        SampleDataBuffer resoDataBuffer(rDataBuffer.GetLength());
-        frequencyGenerator->Supply(machineState, freqDataBuffer, startSample);
+        BaseCountedPtr<SampleDataBuffer> freqDataBuffer( new SampleDataBuffer(rDataBuffer->GetLength()) );
+        BaseCountedPtr<SampleDataBuffer> resoDataBuffer( new SampleDataBuffer(rDataBuffer->GetLength()) );
+        m_frequencyGenerator->Supply(machineState, freqDataBuffer, startSample);
         resonanceGenerator->Supply(machineState, resoDataBuffer, startSample);
         
-        for (int i = 0; i < rDataBuffer.GetLength(); i++)
+        for (int i = 0; i < rDataBuffer->GetLength(); i++)
         {
-            rDataBuffer[i] = filt( rDataBuffer[i], freqDataBuffer[i] / machineState.GetSampleRate(), resoDataBuffer[i],
+            rDataBuffer->Get(i) = filt( rDataBuffer->Get(i), freqDataBuffer->Get(i) / machineState.GetSampleRate(), resoDataBuffer->Get(i),
                                    generatorState->buf1, generatorState->buf2, generatorState->buf3, generatorState->buf4 );
         }
     }

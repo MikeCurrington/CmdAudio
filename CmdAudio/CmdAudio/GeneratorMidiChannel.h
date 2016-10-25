@@ -17,7 +17,7 @@ public:
     GeneratorMidiChannel(int sampleRate);
     
     virtual void AddInput(const std::string& paramName, BaseCountedPtr<GeneratorBase> value) override;
-    virtual void Supply(MachineState & machineState, SampleDataBuffer & rDataBuffer, int startSample) override;
+    virtual void Supply(MachineState& machineState, BaseCountedPtr<SampleDataBuffer>& rDataBuffer, int startSample) override;
     
 protected:
     BaseCountedPtr<GeneratorBase> channelGenerator;

@@ -9,7 +9,7 @@
 /// Unlike a traditional array reading off the start of the buffer returns the first value,
 /// reading off the end returns the last value.
 ///
-class SampleDataBuffer
+class SampleDataBuffer : public BaseCounted<SampleDataBuffer>
 {
 protected:
     SampleDataBuffer() : m_length(0), m_buffer(nullptr) {}
@@ -39,6 +39,16 @@ public:
     {
         memset( m_buffer, 0, GetLength()*sizeof(float) );
     }
+    void Set( const SampleDataBuffer & src )
+    {
+        int srclen = src.GetLength();
+        int copylen = srclen > GetLength() ? GetLength() : srclen;
+        memcpy( m_buffer, src.m_buffer, copylen * sizeof(float) );
+        for(int i=copylen; i<GetLength(); i++)
+        {
+            m_buffer[i] = 0.0f;
+        }
+    }
 
 protected:
 	int m_length;
@@ -48,9 +58,9 @@ protected:
 class SampleDataBufferView : public SampleDataBuffer
 {
 public:
-    SampleDataBufferView( SampleDataBuffer * buffer, int startOffset, int length );
+    SampleDataBufferView( const BaseCountedPtr<SampleDataBuffer>& buffer, int startOffset, int length );
     ~SampleDataBufferView();
 protected:
-    SampleDataBuffer* m_sourceBuffer;   ///TODO: do we want to switch to refcounting buffers, if the buffer goes out of scope before the bufer view we will have a dangling pointer
+    BaseCountedPtr<SampleDataBuffer> m_sourceBuffer;
 };
 

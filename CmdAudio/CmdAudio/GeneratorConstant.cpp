@@ -13,8 +13,8 @@ GeneratorConstant::~GeneratorConstant()
 }
 
 
-void GeneratorConstant::Supply(MachineState & machineState, SampleDataBuffer & rDataBuffer, int startSample)
+void GeneratorConstant::Supply(MachineState& machineState, BaseCountedPtr<SampleDataBuffer>& rDataBuffer, int startSample)
 {
-	for (int i = 0; i < rDataBuffer.GetLength(); i++)
-		rDataBuffer[i] = fValue;
+	for (int i = 0; i < rDataBuffer->GetLength(); i++)
+		rDataBuffer->Get(i) = fValue;
 }

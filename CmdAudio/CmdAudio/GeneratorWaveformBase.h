@@ -16,7 +16,7 @@ protected:
 
 protected:
 	int sampleRate;
-	BaseCountedPtr<GeneratorBase> frequencyGenerator;
+    BaseCountedPtr<GeneratorBase> m_frequencyGenerator;
 };
 
 

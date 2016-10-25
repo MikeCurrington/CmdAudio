@@ -15,10 +15,8 @@ SampleDataBuffer::~SampleDataBuffer()
 }
 
 
-SampleDataBufferView::SampleDataBufferView( SampleDataBuffer * buffer, int startOffset, int length )
+SampleDataBufferView::SampleDataBufferView( const BaseCountedPtr<SampleDataBuffer>& buffer, int startOffset, int length ) : m_sourceBuffer(buffer)
 {
-    m_sourceBuffer = buffer;
-    
     if (startOffset >= buffer->GetLength())
     {
         m_length = 0;

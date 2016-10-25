@@ -97,6 +97,10 @@ public:
     {
         return obj!=nullptr;
     }
+    operator T&() const
+    {
+        return *obj;
+    }
     
     T* Obj()
     {

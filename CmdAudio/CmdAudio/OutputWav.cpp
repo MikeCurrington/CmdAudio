@@ -43,7 +43,7 @@ void OutputWav::Write(MachineState& machineState, int outputLength)
             int chunkLength = 22050;
             if (chunkLength > remaining)
                 chunkLength = remaining;
-            SampleDataBufferView chunkView(&output, offset, chunkLength);
+            BaseCountedPtr<SampleDataBuffer> chunkView( new SampleDataBufferView(&output, offset, chunkLength) );
             
             sourceGenerator->Supply(machineState, chunkView, offset);
             remaining -= chunkLength;

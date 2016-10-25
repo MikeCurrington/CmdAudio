@@ -19,15 +19,15 @@ void GeneratorNoise::AddInput(const std::string& paramName, BaseCountedPtr<Gener
     GeneratorBase::AddInput(paramName, value);
 }
 
-void GeneratorNoise::Supply(MachineState & machineState, SampleDataBuffer & rDataBuffer, int startSample)
+void GeneratorNoise::Supply(MachineState& machineState, BaseCountedPtr<SampleDataBuffer>& rDataBuffer, int startSample)
 {
     BaseCountedPtr<GeneratorStateNoise> generatorState = machineState.GetGeneratorState<GeneratorStateNoise>( GetId() );
     
     int seed = generatorState->m_seed;
-    for (int i = 0; i < rDataBuffer.GetLength(); i++)
+    for (int i = 0; i < rDataBuffer->GetLength(); i++)
     {
         seed *= 16807;
-        rDataBuffer[i] = seed * 4.6566129e-010f;
+        rDataBuffer->Get(i) = seed * 4.6566129e-010f;
     }
     generatorState->m_seed = seed;
 

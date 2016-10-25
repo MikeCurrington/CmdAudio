@@ -18,7 +18,7 @@ void GeneratorUnbound::AddInput(const std::string& paramName, BaseCountedPtr<Gen
     GeneratorBase::AddInput(paramName, value);
 }
 
-void GeneratorUnbound::Supply(MachineState & machineState, SampleDataBuffer & rDataBuffer, int startSample)
+void GeneratorUnbound::Supply(MachineState& machineState, BaseCountedPtr<SampleDataBuffer>& rDataBuffer, int startSample)
 {
     BaseCountedPtr<GeneratorBase> param = machineState.Find( this->name );
     if (param)

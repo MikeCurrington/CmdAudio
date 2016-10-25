@@ -12,12 +12,12 @@ private:
     GeneratorComponent();		// deliberately not implemented
 public:
     GeneratorComponent(int sampleRate);
-    void Supply(const GeneratorInstance * parent, MachineState & machineState, SampleDataBuffer & rDataBuffer, int startSample);
+    void Supply(const GeneratorInstance * parent, MachineState& machineState, BaseCountedPtr<SampleDataBuffer>& rDataBuffer, int startSample);
     
 protected:
     ~GeneratorComponent();
     virtual void AddInput(const std::string& paramName, BaseCountedPtr<GeneratorBase> value) override;
-    virtual void Supply(MachineState & machineState, SampleDataBuffer & rDataBuffer, int startSample) override {
+    virtual void Supply(MachineState& machineState, BaseCountedPtr<SampleDataBuffer>& rDataBuffer, int startSample) override {
         GeneratorComponent::Supply(nullptr, machineState, rDataBuffer, startSample);
     }
     

@@ -23,7 +23,7 @@ void GeneratorMultiply::AddInput(const std::string& paramName, BaseCountedPtr<Ge
 		GeneratorBase::AddInput(paramName, value);
 }
 
-void GeneratorMultiply::Supply(MachineState & machineState, SampleDataBuffer & rDataBuffer, int startSample)
+void GeneratorMultiply::Supply(MachineState& machineState, BaseCountedPtr<SampleDataBuffer>& rDataBuffer, int startSample)
 {
     if (generators)
     {
@@ -38,12 +38,12 @@ void GeneratorMultiply::Supply(MachineState & machineState, SampleDataBuffer & r
                 
                 for(; inputIter != generatorArray->end(); inputIter++)
                 {
-                    SampleDataBuffer bDataBuffer(rDataBuffer.GetLength());
+                    BaseCountedPtr<SampleDataBuffer> bDataBuffer( new SampleDataBuffer(rDataBuffer->GetLength()) );
                     inputIter->second->Supply(machineState, bDataBuffer, startSample);
                     
-                    for (int i = 0; i < rDataBuffer.GetLength(); i++)
+                    for (int i = 0; i < rDataBuffer->GetLength(); i++)
                     {
-                        rDataBuffer[i] = rDataBuffer[i] * bDataBuffer[i];
+                        rDataBuffer->Get(i) = rDataBuffer->Get(i) * bDataBuffer->Get(i);
                     }
                 }
             }

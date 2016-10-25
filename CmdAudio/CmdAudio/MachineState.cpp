@@ -44,5 +44,35 @@ int MachineState::GenerateStateId()
     return ++nextStateId;
 }
 
+const SampleDataBuffer * MachineState::GetGeneratorBuffer( int generatorId ) const
+{
+    auto it = statementBuffers.find(generatorId);
+    if (it != statementBuffers.end())
+    {
+        return it->second.ConstObj();
+    }
+    return nullptr;
+}
+
+void MachineState::SetGeneratorBuffer( int generatorId, BaseCountedPtr<SampleDataBuffer> buffer )
+{
+    auto it = statementBuffers.find(generatorId);
+    if (it != statementBuffers.end())
+    {
+        it->second = buffer;
+    }
+    else
+    {
+        statementBuffers.insert( {generatorId, buffer} );
+    }
+}
+
+void MachineState::ClearStatementBuffers()
+{
+    statementBuffers.clear();
+}
+
+
+
 
 

@@ -31,7 +31,7 @@ protected:
     
 protected:
     BaseCountedPtr<GeneratorBase> m_sourceGenerator;
-    SampleDataBuffer* m_output;
+    BaseCountedPtr<SampleDataBuffer> m_output;
     int m_outputLength;
     int m_sampleRate;
     int m_currentSampleOffset;

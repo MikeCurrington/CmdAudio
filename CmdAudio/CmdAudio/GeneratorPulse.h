@@ -8,7 +8,7 @@ public:
     
 protected:
     ~GeneratorPulse();
-    void Supply(MachineState & machineState, SampleDataBuffer & rDataBuffer, int startSample);
+    void Supply(MachineState& machineState, BaseCountedPtr<SampleDataBuffer>& rDataBuffer, int startSample);
     
 protected:
 };

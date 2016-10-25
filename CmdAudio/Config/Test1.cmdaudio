@@ -1,87 +1,13 @@
 
-
-generator Drum() = {
-  state noteLengthInv = 8.0;
-  state decaySaw = Saw( Frequency: noteLengthInv );
-  state noteTrigger = Pulse( Frequency: noteLengthInv );
-
-  state decay = Lerp( value: decaySaw, min:1, max: 0 );
-  state noise = Noise();
-  state prefiltered = noise * decay;
-
-  state filter = FilterLadder(in: prefiltered, frequency: 2500, resonance: 0.0 );
-  state out = noteTrigger * filter;
-
-  output out;
-}
-
-
-generator NoteRelease( ) = {
-
-  state releaseSaw = Lerp( value: Saw( Frequency: 1.0 ), min: 1, max: 0 );
-  state release = releaseSaw * Pulse( Frequency: 1.0 );
-
-  output release;
-}
-
-generator Note(freq, noteon) = {
-  state beep = Sine( Frequency: freq );
-
-  state sustainLevel = 0.125;
-
-  state attackSaw = Saw( Frequency: 1 );
-  state attack = Lerp( value: attackSaw, min:0, max: 1 ) * Pulse( Frequency: 1.0 );
-
-  state decaySaw = Saw( Frequency: 1.0 );
-  state decay = Lerp( value: decaySaw, min:1, max: sustainLevel ) * Pulse( Frequency: 1 );
-  state decayDelayed = Delay( delay: 22050, duration: 11025, in: decay );
-
-  state sustain = sustainLevel * Pulse( Frequency: 1 );
-  state sustainDelayed = Delay( delay: 44100, duration: 11025, in: sustain );
-
-  state onramp = attack + decayDelayed + sustainDelayed;
-  state noteonInv = Lerp( value: noteon, min:1, max: 0 );
-  state onheld = Hold( in: onramp, hold: noteon);//noteonInv );
-
-  state releaseTrigger = Lerp( value: noteon, min:2, max:0 );
-state releaseEnv = NoteRelease( reset: releaseTrigger ) + noteon;
-
-state out =  beep * releaseEnv;// * releaseEnv;
-
-  output out;
-}
-
-
-generator TestInternal() = {
-state pulse = Sine( Frequency: 0.5 );
-output pulse;
-}
-
-generator TestReset( test ) = {
-state out = TestInternal( reset: test );
-output out;
-}
-
 generator TestDouble( ) = {
-state s = Sine( Frequency: 1.0 );
-state ss = Lerp( value: s, min: 0, max:1 );
-state out = ss + s;
+state s = Sine( Frequency: 50.0 );
+state ss = Lerp( value: s, min:0.99, max:1 );
+state out = ss* s;
 output out;
 }
 
 
 generator Main(time) = {
-//  state drumTrigger = Saw( Frequency: 1.0 );
-//state out = Sine(Frequency:440.0) * Pulse( Frequency: 1.0 );
-
-//  state notetrigger = Pulse( Frequency: 0.8 );
-//  state out = Note( freq: 500.0, noteon: notetrigger );
-
-//state notetrigger = Saw( Frequency: 1.0 );
-//state out = TestReset( test: notetrigger );
-
-//  state out = Drum(reset: drumTrigger);
-
   state out = TestDouble();
   output out;
 }

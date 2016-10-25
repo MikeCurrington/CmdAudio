@@ -27,7 +27,7 @@ void GeneratorAdd::AddInput(const std::string& paramName, BaseCountedPtr<Generat
         GeneratorBase::AddInput(paramName, value);
 }
 
-void GeneratorAdd::Supply(MachineState & machineState, SampleDataBuffer & rDataBuffer, int startSample)
+void GeneratorAdd::Supply(MachineState&  machineState, BaseCountedPtr<SampleDataBuffer>& rDataBuffer, int startSample)
 {
     if (generators)
     {
@@ -42,12 +42,12 @@ void GeneratorAdd::Supply(MachineState & machineState, SampleDataBuffer & rDataB
                 
                 for(; inputIter != generatorArray->end(); inputIter++)
                 {
-                    SampleDataBuffer bDataBuffer(rDataBuffer.GetLength());
+                    BaseCountedPtr<SampleDataBuffer> bDataBuffer( new SampleDataBuffer(rDataBuffer->GetLength()) );
                     inputIter->second->Supply(machineState, bDataBuffer, startSample);
         
-                    for (int i = 0; i < rDataBuffer.GetLength(); i++)
+                    for (int i = 0; i < rDataBuffer->GetLength(); i++)
                     {
-                        rDataBuffer[i] = rDataBuffer[i] + bDataBuffer[i];
+                        rDataBuffer->Get(i) += bDataBuffer->Get(i);
                     }
                 }
             }

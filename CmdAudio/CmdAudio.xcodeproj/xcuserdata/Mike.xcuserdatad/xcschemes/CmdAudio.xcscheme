@@ -63,7 +63,7 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "../../../../../Config/Test1.cmdaudio"
+            argument = "../../../../../Config/Test2.cmdaudio"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument

@@ -28,23 +28,23 @@ void GeneratorLerp::AddInput(const std::string& paramName, BaseCountedPtr<Genera
 		GeneratorBase::AddInput(paramName, value);
 }
 
-void GeneratorLerp::Supply(MachineState & machineState, SampleDataBuffer & rDataBuffer, int startSample)
+void GeneratorLerp::Supply(MachineState& machineState, BaseCountedPtr<SampleDataBuffer>& rDataBuffer, int startSample)
 {
 	// get the values to lerp between
 	if (valueGenerator && minGenerator && maxGenerator)
 	{
 		valueGenerator->Supply(machineState, rDataBuffer, startSample);
 
-		SampleDataBuffer minDataBuffer(rDataBuffer.GetLength());
+		BaseCountedPtr<SampleDataBuffer> minDataBuffer( new SampleDataBuffer(rDataBuffer->GetLength()) );
 		minGenerator->Supply(machineState, minDataBuffer, startSample);
-		SampleDataBuffer maxDataBuffer( rDataBuffer.GetLength() );
+		BaseCountedPtr<SampleDataBuffer> maxDataBuffer( new SampleDataBuffer( rDataBuffer->GetLength()) );
 		maxGenerator->Supply(machineState, maxDataBuffer, startSample);
 
-		for (int i = 0; i < rDataBuffer.GetLength(); i++)
+		for (int i = 0; i < rDataBuffer->GetLength(); i++)
 		{
-			float fMin = minDataBuffer[i];
-			float fRange = maxDataBuffer[i] - fMin;
-			rDataBuffer[i] = (0.5f*(rDataBuffer[i]+1.0f))*fRange + fMin;
+			float fMin = minDataBuffer->Get(i);
+			float fRange = maxDataBuffer->Get(i) - fMin;
+			rDataBuffer->Get(i) = (0.5f*(rDataBuffer->Get(i)+1.0f))*fRange + fMin;
 		}
 	}
 }

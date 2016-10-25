@@ -39,8 +39,10 @@ void GeneratorComponent::AddInput(const std::string& paramName, BaseCountedPtr<G
     }
 }
 
-void GeneratorComponent::Supply(const GeneratorInstance * parent, MachineState & machineState, SampleDataBuffer & rDataBuffer, int startSample)
+void GeneratorComponent::Supply(const GeneratorInstance * parent, MachineState& machineState, BaseCountedPtr<SampleDataBuffer>& rDataBuffer, int startSample)
 {
+    machineState.ClearStatementBuffers();
+    
     source->Supply(machineState, rDataBuffer, startSample);
 }
 

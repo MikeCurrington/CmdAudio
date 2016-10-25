@@ -1,21 +1,15 @@
 #pragma once
-#include "GeneratorBase.h"
+#include "GeneratorWaveformBase.h"
 
-class GeneratorRamp : public GeneratorBase
+class GeneratorRamp : public GeneratorWaveformBase
 {
 private:
 	GeneratorRamp();		// deliberately not implemented
-public:
-	GeneratorRamp(int sampleRate);
 
 protected:
-	~GeneratorRamp();
-	virtual void AddInput(const std::string& paramName, BaseCountedPtr<GeneratorBase> value) override;
-	virtual void Supply(MachineState & machineState, SampleDataBuffer & rDataBuffer, int startSample) override;
+	virtual void Supply(MachineState& machineState, BaseCountedPtr<SampleDataBuffer>& rDataBuffer, int startSample) override;
 
 protected:
-	int sampleRate;
-	BaseCountedPtr<GeneratorBase> timeGenerator;
 };
 
 

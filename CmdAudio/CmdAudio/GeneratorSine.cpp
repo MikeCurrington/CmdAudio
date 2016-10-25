@@ -11,21 +11,21 @@ GeneratorSine::~GeneratorSine()
 {
 }
 
-void GeneratorSine::Supply(MachineState & machineState, SampleDataBuffer & rDataBuffer, int startSample)
+void GeneratorSine::Supply(MachineState& machineState, BaseCountedPtr<SampleDataBuffer>& rDataBuffer, int startSample)
 {
     auto state = machineState.GetGeneratorState<GeneratorStateWaveformBase>( GetId() );
     
     const float fSampleRate = (float) this->sampleRate;
 	
-	if (frequencyGenerator)
+	if (m_frequencyGenerator)
 	{
-		frequencyGenerator->Supply(machineState, rDataBuffer, startSample);
+		m_frequencyGenerator->Supply(machineState, rDataBuffer, startSample);
 		float fPiDivSampleRate = 2.0f *M_PI / fSampleRate;
         float fPhase = state->GetPhase();
-		for (int i = 0; i < rDataBuffer.GetLength(); i++)
+		for (int i = 0; i < rDataBuffer->GetLength(); i++)
 		{
-			float nextPhase = fPhase + rDataBuffer[i] * fPiDivSampleRate;
-			rDataBuffer[i] = sinf(fPhase);
+			float nextPhase = fPhase + rDataBuffer->Get(i) * fPiDivSampleRate;
+			rDataBuffer->Get(i) = sinf(fPhase);
 			fPhase = nextPhase;
 		}
         state->SetPhase(fPhase);

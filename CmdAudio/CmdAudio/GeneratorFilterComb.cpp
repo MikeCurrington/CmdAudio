@@ -34,7 +34,7 @@ void GeneratorFilterComb::AddInput(const std::string& paramName, BaseCountedPtr<
         GeneratorValueTransform::AddInput(paramName, value);
 }
 
-void GeneratorFilterComb::Supply(MachineState & machineState, SampleDataBuffer & rDataBuffer, int startSample)
+void GeneratorFilterComb::Supply(MachineState& machineState, BaseCountedPtr<SampleDataBuffer>& rDataBuffer, int startSample)
 {
     BaseCountedPtr<GeneratorStateFilterComb> generatorState = machineState.GetGeneratorState<GeneratorStateFilterComb>( GetId() );
     
@@ -42,18 +42,18 @@ void GeneratorFilterComb::Supply(MachineState & machineState, SampleDataBuffer &
     {
         sourceBuffer->Supply(machineState, rDataBuffer, startSample);
         
-        SampleDataBuffer delayDataBuffer(rDataBuffer.GetLength());
-        SampleDataBuffer feedbackDataBuffer(rDataBuffer.GetLength());
+        BaseCountedPtr<SampleDataBuffer> delayDataBuffer( new SampleDataBuffer(rDataBuffer->GetLength()) );
+        BaseCountedPtr<SampleDataBuffer> feedbackDataBuffer( new SampleDataBuffer(rDataBuffer->GetLength()) );
 
         delayGenerator->Supply(machineState, delayDataBuffer, startSample);
         feedbackGainGenerator->Supply(machineState, feedbackDataBuffer, startSample);
         
-        for (int i = 0; i < rDataBuffer.GetLength(); i++)
+        for (int i = 0; i < rDataBuffer->GetLength(); i++)
         {
-            float in = rDataBuffer[i];
+            float in = rDataBuffer->Get(i);
             generatorState->Write( in );
-            float feedback = feedbackDataBuffer[i];
-            rDataBuffer[i] = feedback *  generatorState->Read( delayDataBuffer[i] ) + (1.0f - feedback) * in;
+            float feedback = feedbackDataBuffer->Get(i);
+            rDataBuffer->Get(i) = feedback *  generatorState->Read( delayDataBuffer->Get(i) ) + (1.0f - feedback) * in;
         }
     }
 }

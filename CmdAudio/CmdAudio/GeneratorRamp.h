@@ -5,7 +5,9 @@ class GeneratorRamp : public GeneratorWaveformBase
 {
 private:
 	GeneratorRamp();		// deliberately not implemented
-
+public:
+    GeneratorRamp( int sampleRate );
+    
 protected:
 	virtual void Supply(MachineState& machineState, BaseCountedPtr<SampleDataBuffer>& rDataBuffer, int startSample) override;
 

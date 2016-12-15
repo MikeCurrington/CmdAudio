@@ -7,7 +7,8 @@ class GeneratorConstant :
 private:
 	GeneratorConstant();	// deliberately not implemened
 public:
-	GeneratorConstant( float value );
+	GeneratorConstant( const std::string& name, float value );
+    float GetValue() const { return fValue; }
 
 protected:
 	~GeneratorConstant();

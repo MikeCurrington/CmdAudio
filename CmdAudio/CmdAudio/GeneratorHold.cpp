@@ -12,7 +12,7 @@
 //#include "string.h"
 
 
-GeneratorHold::GeneratorHold() : GeneratorValueTransform()
+GeneratorHold::GeneratorHold(const std::string& name) : GeneratorValueTransform(name)
 {
 }
 

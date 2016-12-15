@@ -16,7 +16,7 @@ class GeneratorInstance : public GeneratorBase
 private:
     GeneratorInstance();		// deliberately not implemented
 public:
-    GeneratorInstance(BaseCountedPtr<GeneratorComponent> component);
+    GeneratorInstance(const std::string & name, BaseCountedPtr<GeneratorComponent> component);
     
 protected:
     virtual void AddInput(const std::string& paramName, BaseCountedPtr<GeneratorBase> value) override;
@@ -26,6 +26,7 @@ protected:
     BaseCountedPtr<GeneratorComponent> m_component;
     BaseCountedPtr<GeneratorArray> m_inputs;
     BaseCountedPtr<GeneratorBase> m_resetGenerator;
+    BaseCountedPtr<GeneratorBase> m_runGenerator;
 };
 
 class GeneratorStateInstance : public GeneratorStateBase
@@ -36,7 +37,8 @@ public:
 protected:
     friend class GeneratorInstance;
     
-    bool m_running;
+    bool m_running;     // set when the instance is running (false when 'paused')
+    bool m_hasReset;    // set when the instance has been reset and the 'reset' input is still high (cleared when input goes low, ready for next reset)
     int m_instanceStartSample;
     
     MachineState* m_machineState;

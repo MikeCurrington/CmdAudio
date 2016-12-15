@@ -4,10 +4,10 @@
 class GeneratorThreshold : public GeneratorBase
 {
 public:
-	GeneratorThreshold();
+	GeneratorThreshold(const std::string & name);
 
 protected:
-	~GeneratorThreshold();
+	virtual ~GeneratorThreshold();
 	virtual void AddInput(const std::string& paramName, BaseCountedPtr<GeneratorBase> value) override;
 	virtual void Supply(MachineState& machineState, BaseCountedPtr<SampleDataBuffer>& rDataBuffer, int startSample) override;
 

@@ -4,7 +4,7 @@
 class GeneratorDelay : public GeneratorBase
 {
 public:
-	GeneratorDelay();
+	GeneratorDelay(const std::string& name);
 
 	virtual void AddInput(const std::string& paramName, BaseCountedPtr<GeneratorBase> value) override;
 	virtual void Supply(MachineState& machineState, BaseCountedPtr<SampleDataBuffer>& rDataBuffer, int startSample) override;

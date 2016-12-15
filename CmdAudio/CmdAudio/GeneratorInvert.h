@@ -15,7 +15,10 @@
 class GeneratorInvert : public GeneratorValueTransform
 {
 public:
+    GeneratorInvert(const std::string& name) : GeneratorValueTransform(name) {}
     virtual void Supply(MachineState& machineState, BaseCountedPtr<SampleDataBuffer>& rDataBuffer, int startSample) override;
     
 protected:
+private:
+    GeneratorInvert();  // not implemented
 };

@@ -2,7 +2,7 @@
 #include "MachineState.h"
 
 
-GeneratorUnbound::GeneratorUnbound( const std::string & name ) : GeneratorBase()
+GeneratorUnbound::GeneratorUnbound( const std::string & name ) : GeneratorBase(name)
 {
     this->name = name;
 }
@@ -20,10 +20,11 @@ void GeneratorUnbound::AddInput(const std::string& paramName, BaseCountedPtr<Gen
 
 void GeneratorUnbound::Supply(MachineState& machineState, BaseCountedPtr<SampleDataBuffer>& rDataBuffer, int startSample)
 {
-    BaseCountedPtr<GeneratorBase> param = machineState.Find( this->name );
-    if (param)
+    // get the named generator, and the machine it runs inside (will be in a parent machine if it is a parameter to a Generator block (may even be in a grandparent))
+    std::pair<BaseCountedPtr<GeneratorBase>, MachineState&> paramAndState = machineState.Find( this->name );
+    if (paramAndState.first)
     {
-        param->Supply(machineState, rDataBuffer, startSample);
+        paramAndState.first->Supply(paramAndState.second, rDataBuffer, startSample);
     }
     else
     {

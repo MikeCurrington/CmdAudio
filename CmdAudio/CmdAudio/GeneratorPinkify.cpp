@@ -9,9 +9,8 @@
 #include "MachineState.h"
 
 
-GeneratorPinkify::GeneratorPinkify(int sampleRate)
+GeneratorPinkify::GeneratorPinkify(const std::string& name, int sampleRate) : GeneratorBase(name)
 {
-    fprintf(stdout, "new pinkify\n");
 }
 
 void GeneratorPinkify::AddInput(const std::string& paramName, BaseCountedPtr<GeneratorBase> value)

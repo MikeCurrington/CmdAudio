@@ -4,7 +4,7 @@
 class GeneratorPulse : public GeneratorWaveformBase
 {
 public:
-    GeneratorPulse( int sampleRate );
+    GeneratorPulse( const std::string& name, int sampleRate );
     
 protected:
     ~GeneratorPulse();

@@ -14,7 +14,7 @@
 class GeneratorMidiChannel : public GeneratorBase
 {
 public:
-    GeneratorMidiChannel(int sampleRate);
+    GeneratorMidiChannel(const std::string& name, int sampleRate);
     
     virtual void AddInput(const std::string& paramName, BaseCountedPtr<GeneratorBase> value) override;
     virtual void Supply(MachineState& machineState, BaseCountedPtr<SampleDataBuffer>& rDataBuffer, int startSample) override;

@@ -9,7 +9,7 @@
 #include "GeneratorRef.h"
 
 
-GeneratorRef::GeneratorRef( BaseCountedPtr<GeneratorStatement>& valueGenerator ) : m_statementGenerator(valueGenerator)
+GeneratorRef::GeneratorRef( const std::string& name, BaseCountedPtr<GeneratorStatement>& valueGenerator ) : GeneratorBase(name), m_statementGenerator(valueGenerator)
 {
 }
 

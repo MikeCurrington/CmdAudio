@@ -9,7 +9,7 @@
 #include "GeneratorStatement.h"
 #include "MachineState.h"
 
-GeneratorStatement::GeneratorStatement( const BaseCountedPtr<GeneratorBase>& valueGenerator ) : m_valueGenerator(valueGenerator)
+GeneratorStatement::GeneratorStatement( const std::string& name, const BaseCountedPtr<GeneratorBase>& valueGenerator ) : GeneratorBase(name), m_valueGenerator(valueGenerator)
 {
 }
 

@@ -26,30 +26,6 @@
 #include "yaml-cpp/yaml.h"
 
 
-
-static GeneratorBase * MakeSineOscillator(int sampleRate, float minValue, float maxValue, float frequency )
-{
-    GeneratorBase * sineGen = new GeneratorSine(sampleRate);
-    GeneratorBase * sineFreqGen = new GeneratorConstant(frequency);
-    sineGen->AddInput("frequency", sineFreqGen);
-    
-    GeneratorBase * rangedValue = new GeneratorLerp();
-    GeneratorBase * maxValueGen = new GeneratorConstant(maxValue);
-    GeneratorBase * minValueGen = new GeneratorConstant(minValue);
-    rangedValue->AddInput("value", sineGen);
-    rangedValue->AddInput("min", minValueGen);
-    rangedValue->AddInput("max", maxValueGen);
-    
-    maxValueGen->Release();
-    minValueGen->Release();
-    sineGen->Release();
-    sineFreqGen->Release();
-    
-    return rangedValue;
-}
-
-
-
 BaseCountedPtr<GeneratorBase> LoadProgram( const char * filename, int sampleRate )
 {
     antlr4::ANTLRInputStream input;
@@ -64,7 +40,7 @@ BaseCountedPtr<GeneratorBase> LoadProgram( const char * filename, int sampleRate
     AudioHierarchyBuilder builder;
     BaseCountedPtr<GeneratorComponent> component = builder.Build( &input );
                                    
-    return new GeneratorInstance( component );
+    return new GeneratorInstance( filename, component );
                                    
     /*
      

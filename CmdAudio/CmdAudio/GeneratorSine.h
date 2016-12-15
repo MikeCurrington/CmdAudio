@@ -4,7 +4,7 @@
 class GeneratorSine : public GeneratorWaveformBase
 {
 public:
-	GeneratorSine( int sampleRate );
+	GeneratorSine( const std::string& name, int sampleRate );
 
 protected:
 	~GeneratorSine();

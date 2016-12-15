@@ -13,7 +13,7 @@
 #include "string.h"
 
 
-GeneratorFilter::GeneratorFilter() : GeneratorValueTransform()
+GeneratorFilter::GeneratorFilter(const std::string& name) : GeneratorValueTransform(name)
 {
 }
 

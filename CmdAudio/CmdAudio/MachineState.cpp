@@ -2,52 +2,62 @@
 #include "MachineState.h"
 
 MachineState::MachineState(MachineState* pParent)
-    : sampleRate(22050.0f)
-    , parent(pParent)
-    , nextStateId(0)
+    : m_sampleRate(22050.0f)
+    , m_parent(pParent)
+    , m_nextStateId(0)
 {
 }
 
-void MachineState::PushParameters(BaseCountedPtr<GeneratorArray> & parameters)
+void MachineState::Reset()
 {
-    this->parameterStack.push_back(parameters);
+    m_parameterStack.clear();
+    m_states.clear();
+    m_statementBuffers.clear();
+    m_nextStateId = 0;
+    
+    
+}
+
+void MachineState::PushParameters(BaseCountedPtr<GeneratorArray>& parameters, MachineState& machine)
+{
+    m_parameterStack.push_back( tMachineParameterGroup(parameters, machine) );
 }
 
 void MachineState::PopParameters()
 {
-    this->parameterStack.pop_back();
+    m_parameterStack.pop_back();
 }
 
-BaseCountedPtr<GeneratorBase> MachineState::Find( const std::string & name )
+MachineState::tMachineParameter MachineState::Find( const std::string & name ) const
 {
-    for( auto it = this->parameterStack.rbegin(); it != this->parameterStack.rend(); ++it )
+    for( auto it = m_parameterStack.rbegin(); it != m_parameterStack.rend(); ++it )
     {
-        auto parameter = (*it)->Find( name );
+        auto parameter = it->first->Find( name );
         if (parameter)
         {
-            return parameter;
+            return tMachineParameter(parameter, it->second);
         }
     }
-    if (parent != nullptr)
+    if (m_parent != nullptr)
     {
-        BaseCountedPtr<GeneratorBase> found = parent->Find(name);
-        if (found)
+        auto found = m_parent->Find(name);
+        if (found.first)
         {
             return found;
         }
     }
-    return BaseCountedPtr<GeneratorBase>();
+    return tMachineParameter( BaseCountedPtr<GeneratorBase>(), const_cast<MachineState&>(*this) );
 }
 
 int MachineState::GenerateStateId()
 {
-    return ++nextStateId;
+    return ++m_nextStateId;
 }
 
 const SampleDataBuffer * MachineState::GetGeneratorBuffer( int generatorId ) const
 {
-    auto it = statementBuffers.find(generatorId);
-    if (it != statementBuffers.end())
+    auto it = m_statementBuffers.find(generatorId);
+    if (it != m_statementBuffers.end())
     {
         return it->second.ConstObj();
     }
@@ -56,20 +66,20 @@ const SampleDataBuffer * MachineState::GetGeneratorBuffer( int generatorId ) con
 
 void MachineState::SetGeneratorBuffer( int generatorId, BaseCountedPtr<SampleDataBuffer> buffer )
 {
-    auto it = statementBuffers.find(generatorId);
-    if (it != statementBuffers.end())
+    auto it = m_statementBuffers.find(generatorId);
+    if (it != m_statementBuffers.end())
     {
         it->second = buffer;
     }
     else
     {
-        statementBuffers.insert( {generatorId, buffer} );
+        m_statementBuffers.insert( {generatorId, buffer} );
     }
 }
 
 void MachineState::ClearStatementBuffers()
 {
-    statementBuffers.clear();
+    m_statementBuffers.clear();
 }
 
 

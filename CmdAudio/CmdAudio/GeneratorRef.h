@@ -18,7 +18,7 @@ private:
     GeneratorRef();		// deliberately not implemented
     
 public:
-    GeneratorRef( BaseCountedPtr<GeneratorStatement>& valueGenerator );
+    GeneratorRef( const std::string& name, BaseCountedPtr<GeneratorStatement>& valueGenerator );
     
 protected:
     virtual void Supply(MachineState& machineState, BaseCountedPtr<SampleDataBuffer>& rDataBuffer, int startSample) override;

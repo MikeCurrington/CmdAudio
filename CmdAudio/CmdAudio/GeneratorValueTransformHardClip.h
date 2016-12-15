@@ -4,7 +4,7 @@
 class GeneratorValueTransformHardClip :	public GeneratorValueTransform
 {
 public:
-	GeneratorValueTransformHardClip();
+	GeneratorValueTransformHardClip(const std::string& name);
 
 protected:
 	~GeneratorValueTransformHardClip();

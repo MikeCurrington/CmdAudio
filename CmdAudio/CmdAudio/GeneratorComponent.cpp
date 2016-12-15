@@ -10,7 +10,7 @@
 #include "MachineState.h"
 
 
-GeneratorComponent::GeneratorComponent(int sampleRate) : GeneratorBase(), parameters(nullptr), source(nullptr)
+GeneratorComponent::GeneratorComponent(const std::string& name, int sampleRate) : GeneratorBase(name), parameters(nullptr), source(nullptr)
 {
     this->sampleRate = sampleRate;
 }

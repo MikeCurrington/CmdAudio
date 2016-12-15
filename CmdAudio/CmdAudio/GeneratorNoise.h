@@ -7,7 +7,7 @@ private:
     GeneratorNoise();		// deliberately not implemented
     
 public:
-    GeneratorNoise(int sampleRate);
+    GeneratorNoise(const std::string & name);
     
 protected:
     virtual void AddInput(const std::string& paramName, BaseCountedPtr<GeneratorBase> value) override;

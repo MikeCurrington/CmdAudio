@@ -1,7 +1,7 @@
 #include "GeneratorArray.h"
 
 
-GeneratorArray::GeneratorArray() : GeneratorBase()
+GeneratorArray::GeneratorArray(const std::string& name) : GeneratorBase(name)
 {
 }
 
@@ -23,7 +23,7 @@ void GeneratorArray::Supply(MachineState& machineState, BaseCountedPtr<SampleDat
     assert(0 && "Unbound variable remaining");
 }
 
-BaseCountedPtr<GeneratorBase> GeneratorArray::Find( const std::string generatorName )
+BaseCountedPtr<GeneratorBase> GeneratorArray::Find( const std::string generatorName ) const
 {
     auto r = generators.find(generatorName);
     if (r == generators.end())

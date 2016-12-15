@@ -16,12 +16,12 @@ generator Drum() = {
 }
 
 
-generator NoteRelease( ) = {
+generator NoteRelease( releaseTime ) = {
 
-  state releaseSaw = Lerp( value: Saw( Frequency: 1.0 ), min: 1, max: 0 );
-  state release = releaseSaw * Pulse( Frequency: 1.0 );
+  state releaseRamp = Ramp( Time: releaseTime );
+  state releaseRampInv = Lerp01( value: releaseRamp, min: 1, max: 0 );
 
-  output release;
+  output releaseRampInv;
 }
 
 // ramp that starts at 0 and ends at 1 in 'time'
@@ -32,32 +32,123 @@ output attackSaw;
 }
 
 
+
+generator NoteTone(frequency) = {
+  state rawWave = Saw( Frequency: frequency );
+  state filterFreqMult = Lerp( value: Sine( Frequency: 8 ), min: 1, max: 2.0);
+  state filter = FilterLadder(in: rawWave, frequency: frequency * filterFreqMult, resonance: 2.0 );
+  output filter;
+}
+
+
 generator Note(freq, noteon) = {
-  state beep = Sine( Frequency: freq );
+state beep = NoteTone( frequency: freq );
 
-  state sustainLevel = 0.125;
+state sustainLevel = 0.25;
+state attackTime = 0.5;
+state decayTime = 0.925;
 
-  state attackSaw = Saw( Frequency: 1 );
-  state attack = Lerp( value: attackSaw, min:0, max: 1 ) * Pulse( Frequency: 1.0 );
+state attackRamp = Ramp( Time: attackTime );
+state attack = attackRamp * Pulse( Time: attackTime );
 
-  state decaySaw = Saw( Frequency: 1.0 );
-  state decay = Lerp( value: decaySaw, min:1, max: sustainLevel ) * Pulse( Frequency: 1 );
-  state decayDelayed = Delay( delay: 22050, duration: 11025, in: decay );
+state sustainDelayed = Delay( delay: 22050 * decayTime, duration: 11025, in: sustainLevel );
 
-  state sustain = sustainLevel * Pulse( Frequency: 1 );
-  state sustainDelayed = Delay( delay: 44100, duration: 11025, in: sustain );
+state decaySaw = Ramp( Time: decayTime );
+state decay = Lerp( value: decaySaw, min:2, max: sustainLevel ) * Pulse( Time: decayTime ) + sustainDelayed;
+state decayDelayed = Delay( delay: 22050 * attackTime, duration: 11025, in: decay );
 
-  state onramp = attack + decayDelayed + sustainDelayed;
-  state noteonInv = Lerp( value: noteon, min:1, max: 0 );
-  state onheld = Hold( in: onramp, hold: noteon);//noteonInv );
+state onramp = attack + decayDelayed;
+state noteonInv = Lerp( value: noteon, min:1, max: 0 );
+state onheld = Hold( in: onramp, hold: noteon);//noteonInv );
 
-  state releaseTrigger = Lerp( value: noteon, min:2, max:0 );
-state releaseEnv = NoteRelease( reset: releaseTrigger ) + noteon;
+state releaseTrigger = Lerp( value: noteon, min:2, max:0 );
+state releaseEnv = NoteRelease( releaseTime: 1.0, reset: releaseTrigger ) + noteon;
 
 state out =  beep * onheld * releaseEnv;
 
-  output out;
+output out;
 }
+
+
+generator ADSR(noteon) = {
+
+state sustainLevel = 0.25;
+state attackTime = 0.5;
+state decayTime = 0.925;
+
+state attackRamp = Ramp( Time: attackTime );
+state attack = attackRamp * Pulse( Time: attackTime );
+
+state sustainDelayed = Delay( delay: 22050 * decayTime, duration: 11025, in: sustainLevel );
+
+state decaySaw = Ramp( Time: decayTime );
+state decay = Lerp( value: decaySaw, min:2, max: sustainLevel ) * Pulse( Time: decayTime ) + sustainDelayed;
+state decayDelayed = Delay( delay: 22050 * attackTime, duration: 11025, in: decay );
+
+state onramp = attack + decayDelayed;
+state noteonInv = Lerp( value: noteon, min:1, max: 0 );
+state onheld = Hold( in: onramp, hold: noteon);//noteonInv );
+
+state releaseTrigger = Lerp( value: noteon, min:2, max:0 );
+state releaseEnv = NoteRelease( releaseTime: 1.0, reset: releaseTrigger ) + noteon;
+
+state out =  onheld * releaseEnv;
+
+output out;
+}
+
+
+generator RezZap( ) = {
+state duration = 0.125;
+state noise = Noise();
+
+state sweepRamp = Ramp( Time: duration );
+state filterFreqSweep = Lerp01( value: sweepRamp, min: 2200, max: 10.0 );
+state filtered = FilterLadder(in: noise, frequency: filterFreqSweep, resonance: 4.0 );
+state out = filtered * Pulse( Time: duration );
+
+output out;
+}
+
+
+generator SinBassFreq( freq ) = {
+
+state wav = Sine( Frequency: freq );
+state wav2env = Lerp01(value: Ramp( Time: 0.4 ), min:0.5, max: 0.0);
+state wav2 = Sine( Frequency: freq * 2.0 ) * wav2env;
+state mixedTone = (wav + wav2) * 0.5;
+
+output mixedTone;
+}
+
+
+generator SinBass( freq, noteon ) = {
+
+    state bassTone = SinBassFreq( freq: freq, reset: noteon );
+
+    state noteon01 = Lerp( value: noteon, min:0, max: 1 );
+    state noteonInv = Lerp( value: noteon, min:1, max: 0 );
+    state releaseEnv = NoteRelease( releaseTime: 0.25, reset: noteon, run: noteonInv ) + noteon01;  // trigger the release when the noteon finishes
+    state out =  bassTone * releaseEnv;
+
+    output out;
+}
+
+
+generator FMSynth( freq, fmRatio, fmAmt, noteon ) =
+{
+   state env = ADSR( noteon: noteon );
+
+state op1 = Sine( Frequency: fmRatio*freq ) * fmAmt;
+state genFreq = (1 + op1) * freq;
+state wav = Sine( Frequency: genFreq );
+
+state out = wav * env;
+output out;
+}
+
+
+
 
 
 generator TestInternal() = {
@@ -70,12 +161,12 @@ state out = TestInternal( reset: test );
 output out;
 }
 
-generator Main(time) = {
-  state drumTrigger = Saw( Frequency: 2 );
+generator Main2(time) = {
+  state drumTrigger = Square( Frequency: 1 );
 //state out = Sine(Frequency:440.0) * Pulse( Frequency: 1.0 );
 
-  state notetrigger = Pulse( Frequency: 0.8 );
-  state note = Note( freq: 500.0, noteon: notetrigger );
+//  state notetrigger = Pulse( Time: 1.8 );
+  state note = Note( freq: 440.0, noteon: notetrigger );
 
 //state notetrigger = Saw( Frequency: 1.0 );
 //state out = TestReset( test: notetrigger );
@@ -83,5 +174,24 @@ generator Main(time) = {
   state drum = Drum(reset: drumTrigger);
   state out = drum + note;
 
-  output drum;
+state test = Lerp( value: drumTrigger, min: 0, max: 1);
+state zap = RezZap( reset: test) * test;
+  output zap;
+}
+
+
+generator Main(time) = {
+
+  state bassNote = Square( Time: 0.5 );
+  state bass = SinBass(freq: 87.31, noteon: bassNote ); #87.31 = f2
+
+state leadNote = Square( Time: 1 );
+state lead = SinBass(freq: 349.24, noteon: leadNote ); #87.31 = f2
+
+state drumTrigger = Square( Frequency: 6 );
+state drum = Drum(reset: drumTrigger);
+
+//state out =  bass*0.5 + lead*0.0 + drum*0.015;
+state out = FMSynth( freq: 110, fmRatio: 2, fmAmt: 0.8, noteon: leadNote, reset: noteon );
+output out;
 }

@@ -3,7 +3,8 @@
 #include "GeneratorWaveformBase.h"
 #include "GeneratorInvert.h"
 
-GeneratorWaveformBase::GeneratorWaveformBase(int sampleRate) :
+GeneratorWaveformBase::GeneratorWaveformBase(const std::string & name, int sampleRate) :
+    GeneratorBase(name),
 	sampleRate(sampleRate)
 {
 }
@@ -20,7 +21,7 @@ void GeneratorWaveformBase::AddInput(const std::string& paramName, BaseCountedPt
     }
     else if (strcasecmp(paramName.c_str(), "Time") == 0)
     {
-        BaseCountedPtr<GeneratorBase> invTime = new GeneratorInvert();
+        BaseCountedPtr<GeneratorBase> invTime = new GeneratorInvert(std::string("-1"));
         invTime->AddInput("in", value);
         this->m_frequencyGenerator = invTime;
     }

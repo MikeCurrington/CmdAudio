@@ -4,7 +4,7 @@
 #include "MachineState.h"
 
 
-GeneratorRamp::GeneratorRamp( int samplerate ) : GeneratorWaveformBase( samplerate )
+GeneratorRamp::GeneratorRamp( const std::string & name, int samplerate ) : GeneratorWaveformBase( name, samplerate )
 {
     
 }

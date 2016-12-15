@@ -10,7 +10,7 @@
 #include "MachineState.h"
 
 
-GeneratorNoise::GeneratorNoise(int sampleRate) : GeneratorBase()
+GeneratorNoise::GeneratorNoise(const std::string & name) : GeneratorBase(name)
 {
 }
 

@@ -20,7 +20,7 @@ private:
     friend class GeneratorRef;
     
 public:
-    GeneratorStatement( const BaseCountedPtr<GeneratorBase>& valueGenerator );
+    GeneratorStatement( const std::string& name, const BaseCountedPtr<GeneratorBase>& valueGenerator );
     
 protected:
     //virtual void AddInput(const std::string& paramName, BaseCountedPtr<GeneratorBase> value) override;

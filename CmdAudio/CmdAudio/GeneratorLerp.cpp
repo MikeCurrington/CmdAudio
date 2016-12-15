@@ -2,7 +2,7 @@
 #include "GeneratorLerp.h"
 #include "string.h"
 
-GeneratorLerp::GeneratorLerp() : valueGenerator(nullptr), minGenerator(nullptr), maxGenerator(nullptr)
+GeneratorLerp::GeneratorLerp(const std::string& name) : GeneratorBase(name), valueGenerator(nullptr), minGenerator(nullptr), maxGenerator(nullptr)
 {
 }
 

@@ -2,7 +2,7 @@
 #include "GeneratorConstant.h"
 
 
-GeneratorConstant::GeneratorConstant(float value) : GeneratorBase()
+GeneratorConstant::GeneratorConstant(const std::string& name, float value) : GeneratorBase(name)
 {
 	this->fValue = value;
 }

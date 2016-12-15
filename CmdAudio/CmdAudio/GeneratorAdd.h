@@ -13,8 +13,8 @@
 class GeneratorAdd : public GeneratorBase
 {
 public:
-    GeneratorAdd();
-    ~GeneratorAdd();
+    GeneratorAdd(const std::string & name);
+    virtual ~GeneratorAdd();
     
     virtual void AddInput(const std::string& paramName, BaseCountedPtr<GeneratorBase> value) override;
     

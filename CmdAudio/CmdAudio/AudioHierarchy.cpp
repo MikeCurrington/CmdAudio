@@ -10,7 +10,9 @@
 #include "GeneratorConstant.h"
 #include "GeneratorSine.h"
 #include "GeneratorSaw.h"
+#include "GeneratorSquare.h"
 #include "GeneratorLerp.h"
+#include "GeneratorLerp01.h"
 #include "GeneratorThreshold.h"
 #include "GeneratorDelay.h"
 #include "GeneratorComponent.h"
@@ -39,25 +41,27 @@ using boost::assign::map_list_of;
 
 
 AudioHierarchy::GeneratorTypeToConstructor::GeneratorTypeToConstructor() {
-    map.insert( tGeneratorToConstructor::value_type(std::string("Sine"), [](int sampleRate) { return new GeneratorSine(sampleRate);}) );
-    map.insert( tGeneratorToConstructor::value_type(std::string("Saw"), [](int sampleRate) { return new GeneratorSaw(sampleRate);}) );
-    map.insert( tGeneratorToConstructor::value_type(std::string("Lerp"), [](int sampleRate) { return new GeneratorLerp();}) );
-    map.insert( tGeneratorToConstructor::value_type(std::string("Threshold"), [](int sampleRate) { return new GeneratorThreshold();}) );
-    map.insert( tGeneratorToConstructor::value_type(std::string("Delay"), [](int sampleRate) { return new GeneratorDelay();}) );
-    map.insert( tGeneratorToConstructor::value_type(std::string("Multiply"), [](int sampleRate) { return new GeneratorMultiply();}) );
-    map.insert( tGeneratorToConstructor::value_type(std::string("Add"), [](int sampleRate) { return new GeneratorAdd();}) );
-    map.insert( tGeneratorToConstructor::value_type(std::string("Pulse"), [](int sampleRate) { return new GeneratorPulse(sampleRate);}) );
-    map.insert( tGeneratorToConstructor::value_type(std::string("Ramp"), [](int sampleRate) { return new GeneratorRamp(sampleRate);}) );
-    map.insert( tGeneratorToConstructor::value_type(std::string("Hardclip"), [](int sampleRate) { return new GeneratorValueTransformHardClip();}) );
-    map.insert( tGeneratorToConstructor::value_type(std::string("FilterLadder"), [](int sampleRate) { return new GeneratorFilter();}) );
-    map.insert( tGeneratorToConstructor::value_type(std::string("FilterHigh"), [](int sampleRate) { return new GeneratorFilterHigh();}) );
-    map.insert( tGeneratorToConstructor::value_type(std::string("FilterComb"), [](int sampleRate) { return new GeneratorFilterComb();}) );
-    map.insert( tGeneratorToConstructor::value_type(std::string("Hold"), [](int sampleRate) { return new GeneratorHold();}) );
-    map.insert( tGeneratorToConstructor::value_type(std::string("Noise"), [](int sampleRate) { return new GeneratorNoise(sampleRate);}) );
-    map.insert( tGeneratorToConstructor::value_type(std::string("Pinkify"), [](int sampleRate) { return new GeneratorPinkify(sampleRate);}) );
-    map.insert( tGeneratorToConstructor::value_type(std::string("MidiChannel"), [](int sampleRate) { return new GeneratorMidiChannel(sampleRate);}) );
+    map.insert( tGeneratorToConstructor::value_type(std::string("Sine"), [](const std::string& name, int sampleRate) { return new GeneratorSine(name, sampleRate);}) );
+    map.insert( tGeneratorToConstructor::value_type(std::string("Saw"), [](const std::string& name, int sampleRate) { return new GeneratorSaw(name, sampleRate);}) );
+    map.insert( tGeneratorToConstructor::value_type(std::string("Square"), [](const std::string& name, int sampleRate) { return new GeneratorSquare(name, sampleRate);}) );
+    map.insert( tGeneratorToConstructor::value_type(std::string("Lerp"), [](const std::string& name, int sampleRate) { return new GeneratorLerp(name);}) );
+    map.insert( tGeneratorToConstructor::value_type(std::string("Lerp01"), [](const std::string& name, int sampleRate) { return new GeneratorLerp01(name);}) );
+    map.insert( tGeneratorToConstructor::value_type(std::string("Threshold"), [](const std::string& name, int sampleRate) { return new GeneratorThreshold(name);}) );
+    map.insert( tGeneratorToConstructor::value_type(std::string("Delay"), [](const std::string& name, int sampleRate) { return new GeneratorDelay(name);}) );
+    map.insert( tGeneratorToConstructor::value_type(std::string("Multiply"), [](const std::string& name, int sampleRate) { return new GeneratorMultiply(name);}) );
+    map.insert( tGeneratorToConstructor::value_type(std::string("Add"), [](const std::string& name, int sampleRate) { return new GeneratorAdd(name);}) );
+    map.insert( tGeneratorToConstructor::value_type(std::string("Pulse"), [](const std::string& name, int sampleRate) { return new GeneratorPulse(name, sampleRate);}) );
+    map.insert( tGeneratorToConstructor::value_type(std::string("Ramp"), [](const std::string& name, int sampleRate) { return new GeneratorRamp(name, sampleRate);}) );
+    map.insert( tGeneratorToConstructor::value_type(std::string("Hardclip"), [](const std::string& name, int sampleRate) { return new GeneratorValueTransformHardClip(name);}) );
+    map.insert( tGeneratorToConstructor::value_type(std::string("FilterLadder"), [](const std::string& name, int sampleRate) { return new GeneratorFilter(name);}) );
+    map.insert( tGeneratorToConstructor::value_type(std::string("FilterHigh"), [](const std::string& name, int sampleRate) { return new GeneratorFilterHigh(name);}) );
+    map.insert( tGeneratorToConstructor::value_type(std::string("FilterComb"), [](const std::string& name, int sampleRate) { return new GeneratorFilterComb(name);}) );
+    map.insert( tGeneratorToConstructor::value_type(std::string("Hold"), [](const std::string& name, int sampleRate) { return new GeneratorHold(name);}) );
+    map.insert( tGeneratorToConstructor::value_type(std::string("Noise"), [](const std::string& name, int sampleRate) { return new GeneratorNoise(name);}) );
+    map.insert( tGeneratorToConstructor::value_type(std::string("Pinkify"), [](const std::string& name, int sampleRate) { return new GeneratorPinkify(name, sampleRate);}) );
+    map.insert( tGeneratorToConstructor::value_type(std::string("MidiChannel"), [](const std::string& name, int sampleRate) { return new GeneratorMidiChannel(name, sampleRate);}) );
 
-    map.insert( tGeneratorToConstructor::value_type(std::string("Component"), [](int sampleRate) { return new GeneratorComponent(sampleRate);}) );
+    map.insert( tGeneratorToConstructor::value_type(std::string("Component"), [](const std::string& name, int sampleRate) { return new GeneratorComponent(name, sampleRate);}) );
 }
 
 AudioHierarchy::OutputTypeToFunction::OutputTypeToFunction() {
@@ -143,7 +147,7 @@ std::pair<std::string, BaseCountedPtr<GeneratorBase>> AudioHierarchy::ParseHiera
     auto generatorConstructIt = generatorTypeToConstructor.map.find(type);
     if (generatorConstructIt != generatorTypeToConstructor.map.end())
     {
-        g = generatorConstructIt->second(sampleRate);
+        g = generatorConstructIt->second(id, sampleRate);
     }
     else
     {
@@ -151,7 +155,7 @@ std::pair<std::string, BaseCountedPtr<GeneratorBase>> AudioHierarchy::ParseHiera
         if (generator != generators.end())
         {
             BaseCountedPtr<GeneratorBase> parent = generator->second;
-            g = new GeneratorInstance( parent.StaticCast<GeneratorComponent>() );
+            g = new GeneratorInstance( id, parent.StaticCast<GeneratorComponent>() );
         }
     }
     
@@ -171,14 +175,14 @@ BaseCountedPtr<GeneratorBase> AudioHierarchy::ParseNode( const YAML::Node & yaml
     BaseCountedPtr<GeneratorBase> freqGenerator;
     if (yamlNode.IsSequence())
     {
-        freqGenerator = new GeneratorArray();
+        freqGenerator = new GeneratorArray("array");
         for( auto it=yamlNode.begin(); it!=yamlNode.end(); ++it )
         {
             auto strVal = (*it).as<std::string>();
             try {
                 float fVal = (*it).as<float>();
                 fprintf(stdout, "  freq: %f\n", fVal );
-                freqGenerator->AddInput( strVal.c_str(), new GeneratorConstant( fVal ) );
+                freqGenerator->AddInput( strVal.c_str(), new GeneratorConstant( strVal, fVal ) );
             }
             catch( YAML::TypedBadConversion<float> e )
             {
@@ -206,7 +210,7 @@ BaseCountedPtr<GeneratorBase> AudioHierarchy::ParseNode( const YAML::Node & yaml
         try {
             float fVal = yamlNode.as<float>();
             fprintf(stdout, "  freq: %f\n", fVal );
-            freqGenerator = new GeneratorConstant( fVal );
+            freqGenerator = new GeneratorConstant( "const", fVal );
         }
         catch( YAML::TypedBadConversion<float> e )
         {

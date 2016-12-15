@@ -12,7 +12,7 @@
 #include "MachineState.h"
 
 
-GeneratorFilterComb::GeneratorFilterComb() : GeneratorValueTransform()
+GeneratorFilterComb::GeneratorFilterComb(const std::string & name) : GeneratorValueTransform(name)
 {
 }
 

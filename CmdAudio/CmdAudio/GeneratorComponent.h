@@ -11,7 +11,7 @@ class GeneratorComponent : public GeneratorBase
 private:
     GeneratorComponent();		// deliberately not implemented
 public:
-    GeneratorComponent(int sampleRate);
+    GeneratorComponent(const std::string& name, int sampleRate);
     void Supply(const GeneratorInstance * parent, MachineState& machineState, BaseCountedPtr<SampleDataBuffer>& rDataBuffer, int startSample);
     
 protected:

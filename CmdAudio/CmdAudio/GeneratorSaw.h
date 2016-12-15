@@ -4,10 +4,10 @@
 class GeneratorSaw : public GeneratorWaveformBase
 {
 public:
-	GeneratorSaw( int sampleRate );
+	GeneratorSaw( const std::string & name, int sampleRate );
 
 protected:
-	~GeneratorSaw();
+	virtual ~GeneratorSaw();
 	void Supply(MachineState& machineState, BaseCountedPtr<SampleDataBuffer>& rDataBuffer, int startSample);
 
 protected:

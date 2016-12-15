@@ -12,7 +12,7 @@
 class GeneratorHold : public GeneratorValueTransform
 {
 public:
-    GeneratorHold();
+    GeneratorHold(const std::string& name);
     ~GeneratorHold();
     
     virtual void AddInput(const std::string& paramName, BaseCountedPtr<GeneratorBase> value) override;

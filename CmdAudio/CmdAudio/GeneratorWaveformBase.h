@@ -7,10 +7,10 @@ private:
 	GeneratorWaveformBase();		// deliberately not implemented
 
 public:
-	GeneratorWaveformBase(int sampleRate);
+	GeneratorWaveformBase(const std::string & name, int sampleRate);
 	
 protected:
-	~GeneratorWaveformBase();
+	virtual ~GeneratorWaveformBase();
 	virtual void AddInput(const std::string& paramName, BaseCountedPtr<GeneratorBase> value) override;
 	//	virtual void Supply(DataBuffer & rDataBuffer, int startSample) = 0;
 

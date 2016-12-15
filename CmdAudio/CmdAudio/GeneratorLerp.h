@@ -4,7 +4,7 @@
 class GeneratorLerp : public GeneratorBase
 {
 public:
-	GeneratorLerp();
+	GeneratorLerp(const std::string& name);
 
 protected:
 	~GeneratorLerp();

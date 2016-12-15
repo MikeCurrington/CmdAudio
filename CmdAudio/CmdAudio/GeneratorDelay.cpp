@@ -8,7 +8,7 @@ template<class T> T max(const T &a, const T &b) { return a > b ? a : b; }
 
 #define MAX_BUFFERSIZE (1024000)
 
-GeneratorDelay::GeneratorDelay() : delayGenerator(nullptr), durationGenerator(nullptr), sourceGenerator(nullptr)
+GeneratorDelay::GeneratorDelay(const std::string& name) : GeneratorBase(name), delayGenerator(nullptr), durationGenerator(nullptr), sourceGenerator(nullptr)
 {
 }
 

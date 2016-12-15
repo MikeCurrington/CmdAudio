@@ -7,10 +7,10 @@
 class GeneratorValueTransform : public GeneratorBase
 {
 public:
-	GeneratorValueTransform();
+	GeneratorValueTransform(const std::string & name);
 
 protected:
-	~GeneratorValueTransform();
+	virtual ~GeneratorValueTransform();
 	virtual void AddInput(const std::string& paramName, BaseCountedPtr<GeneratorBase> value) override;
 	virtual void Supply(MachineState& machineState, BaseCountedPtr<SampleDataBuffer>& rDataBuffer, int startSample) override = 0;
 

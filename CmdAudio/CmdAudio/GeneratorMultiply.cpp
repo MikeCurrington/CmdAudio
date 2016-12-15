@@ -3,7 +3,7 @@
 #include "GeneratorMultiply.h"
 
 
-GeneratorMultiply::GeneratorMultiply() : generators(nullptr)
+GeneratorMultiply::GeneratorMultiply(const std::string & name) : GeneratorBase(name), generators(nullptr)
 {
 }
 

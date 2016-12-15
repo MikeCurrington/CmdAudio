@@ -12,9 +12,9 @@ class GeneratorArray : public GeneratorBase
 {
 private:
 public:
-    GeneratorArray( );
+    GeneratorArray( const std::string& name );
     
-    BaseCountedPtr<GeneratorBase> Find( const std::string generatorName );
+    BaseCountedPtr<GeneratorBase> Find( const std::string generatorName ) const;
     
     std::unordered_map<std::string, BaseCountedPtr<GeneratorBase>>::iterator begin()
     {

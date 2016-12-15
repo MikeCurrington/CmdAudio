@@ -24,7 +24,9 @@
 #include "GeneratorConstant.h"
 #include "GeneratorSine.h"
 #include "GeneratorSaw.h"
+#include "GeneratorSquare.h"
 #include "GeneratorLerp.h"
+#include "GeneratorLerp01.h"
 #include "GeneratorThreshold.h"
 #include "GeneratorDelay.h"
 #include "GeneratorComponent.h"
@@ -53,7 +55,7 @@ static const int sampleRate = 22050;    ///TODO: remove this
 
 class CmdAudioListenerImpl : public CmdAudioBaseListener
 {
-    typedef std::function<GeneratorBase*(int)> tGeneratorConstructor;
+    typedef std::function<GeneratorBase*(const std::string& name, int sampleRate)> tGeneratorConstructor;
     typedef std::map<std::string,tGeneratorConstructor> tGeneratorToConstructor;
     struct GeneratorTypeToConstructor {
         operator const tGeneratorToConstructor() const {
@@ -72,7 +74,7 @@ public:
         std::cout << name->toString();
         const auto& parameterList = ctx->genparlist();
         
-        auto component = new GeneratorComponent(sampleRate);
+        auto component = new GeneratorComponent(name->toString(), sampleRate);
         m_components.insert( std::pair<std::string,BaseCountedPtr<GeneratorComponent>>( name->toString(), component ) );
         if (name->toString()=="Main")
         {
@@ -86,7 +88,7 @@ public:
         
         if (parameterList)
         {
-            BaseCountedPtr<GeneratorBase> parameterArray = new GeneratorArray();
+            BaseCountedPtr<GeneratorBase> parameterArray = new GeneratorArray("params");
             int paramCount = 0;
             const auto& namelist = parameterList->namelist();
             for(const auto& parameterNameToken : namelist->NAME())
@@ -121,7 +123,7 @@ public:
         
         Ref<CmdAudioParser::ExpContext> expression = ctx->exp();
         
-        BaseCountedPtr<GeneratorStatement> statementGenerator = new GeneratorStatement( ProcessExpression( expression ) );
+        BaseCountedPtr<GeneratorStatement> statementGenerator = new GeneratorStatement( name->getText(), ProcessExpression( expression ) );
         m_statementLocals.insert( std::pair<std::string,BaseCountedPtr<GeneratorStatement>>( name->getText(), statementGenerator ) );
         m_statementLocalsUsage.insert( std::pair<std::string, int>( name->getText(), 0 ) );
     }
@@ -134,7 +136,7 @@ public:
         if ( expression->number() )
         {
             Ref<CmdAudioParser::NumberContext> number = expression->number();
-            generator = new GeneratorConstant( atof(number->getText().c_str()) );
+            generator = new GeneratorConstant( number->getText(), atof(number->getText().c_str()) );
         }
         else if ( expression->prefixexp() )
         {
@@ -170,14 +172,14 @@ public:
             else if ( prefixExp->function() )
             {
                 const auto& func = prefixExp->function();
-                std::string funcName = func->NAME()->getText();
+                const std::string& funcName = func->NAME()->getText();
                 std::cout << "= function:" << funcName << "\n";
 
                 // See if the function is a known generator
                 const auto& generatorConstructIt = generatorTypeToConstructor.map.find(funcName);
                 if (generatorConstructIt != generatorTypeToConstructor.map.end())
                 {
-                    generator = generatorConstructIt->second(sampleRate);
+                    generator = generatorConstructIt->second(funcName, sampleRate);
                 }
                 else
                 {
@@ -187,7 +189,7 @@ public:
                         if (foundComponentIt != componentStackIter->end())
                         {
                             BaseCountedPtr<GeneratorBase> foundComponent = foundComponentIt->second;
-                            generator  = new GeneratorInstance( foundComponent.StaticCast<GeneratorComponent>() );
+                            generator  = new GeneratorInstance( funcName, foundComponent.StaticCast<GeneratorComponent>() );
                         }
                     }
                 }
@@ -214,6 +216,26 @@ public:
                 }
             }
         }
+        else if (expression->operatorUnary())
+        {
+            const auto& unary = expression->operatorUnary();
+            if ( unary->getText() == "-" )
+            {
+                const auto& unaryExp = expression->exp();
+                assert(unaryExp.size() == 1);
+                generator = ProcessExpression( *unaryExp.begin() );
+                GeneratorConstant* constantGen = dynamic_cast<GeneratorConstant*>( generator.Obj() );
+                if (constantGen != nullptr)
+                {
+                    generator = new GeneratorConstant( constantGen->GetName(), -constantGen->GetValue() );
+                }
+                else
+                    assert(0);  // cant do unary on a non const (yet), implement with a multiply by -1
+            }
+            else{
+                assert(0);
+            }
+        }
         else if (expression->operatorMulDiv())
         {
             auto muldiv = expression->operatorMulDiv();
@@ -221,7 +243,7 @@ public:
                 std::cout << " mult\n";
             else
                 std::cout << " div\n";
-            BaseCountedPtr<GeneratorBase> multArrayGenerator = new GeneratorArray();
+            BaseCountedPtr<GeneratorBase> multArrayGenerator = new GeneratorArray("muldiv");
             int paramCount = 0;
             
             for( const auto& exp : expression->exp() )
@@ -231,7 +253,7 @@ public:
                 paramCount++;
             }
             
-            BaseCountedPtr<GeneratorMultiply> multGenerator = new GeneratorMultiply();
+            BaseCountedPtr<GeneratorMultiply> multGenerator = new GeneratorMultiply("*");
             multGenerator->AddInput("in", multArrayGenerator.StaticCast<GeneratorBase>());
             
             generator = multGenerator.StaticCast<GeneratorBase>();
@@ -243,7 +265,7 @@ public:
                 std::cout << " add\n";
             else
                 std::cout << " sub\n";
-            BaseCountedPtr<GeneratorBase> addArrayGenerator = new GeneratorArray();
+            BaseCountedPtr<GeneratorBase> addArrayGenerator = new GeneratorArray("addsub");
             int paramCount = 0;
             
             for( const auto& exp : expression->exp() )
@@ -253,7 +275,7 @@ public:
                 paramCount++;
             }
             
-            BaseCountedPtr<GeneratorAdd> addGenerator = new GeneratorAdd();
+            BaseCountedPtr<GeneratorAdd> addGenerator = new GeneratorAdd("+");
             addGenerator->AddInput("in", addArrayGenerator.StaticCast<GeneratorBase>());
             
             generator = addGenerator.StaticCast<GeneratorBase>();
@@ -319,23 +341,25 @@ protected:
 
 
 CmdAudioListenerImpl::GeneratorTypeToConstructor::GeneratorTypeToConstructor() {
-    map.insert( tGeneratorToConstructor::value_type(std::string("Sine"), [](int sampleRate) { return new GeneratorSine(sampleRate);}) );
-    map.insert( tGeneratorToConstructor::value_type(std::string("Saw"), [](int sampleRate) { return new GeneratorSaw(sampleRate);}) );
-    map.insert( tGeneratorToConstructor::value_type(std::string("Lerp"), [](int sampleRate) { return new GeneratorLerp();}) );
-    map.insert( tGeneratorToConstructor::value_type(std::string("Threshold"), [](int sampleRate) { return new GeneratorThreshold();}) );
-    map.insert( tGeneratorToConstructor::value_type(std::string("Delay"), [](int sampleRate) { return new GeneratorDelay();}) );
-    map.insert( tGeneratorToConstructor::value_type(std::string("Multiply"), [](int sampleRate) { return new GeneratorMultiply();}) );
-    map.insert( tGeneratorToConstructor::value_type(std::string("Add"), [](int sampleRate) { return new GeneratorAdd();}) );
-    map.insert( tGeneratorToConstructor::value_type(std::string("Pulse"), [](int sampleRate) { return new GeneratorPulse(sampleRate);}) );
-    map.insert( tGeneratorToConstructor::value_type(std::string("Ramp"), [](int sampleRate) { return new GeneratorRamp(sampleRate);}) );
-    map.insert( tGeneratorToConstructor::value_type(std::string("Hardclip"), [](int sampleRate) { return new GeneratorValueTransformHardClip();}) );
-    map.insert( tGeneratorToConstructor::value_type(std::string("FilterLadder"), [](int sampleRate) { return new GeneratorFilter();}) );
-    map.insert( tGeneratorToConstructor::value_type(std::string("FilterHigh"), [](int sampleRate) { return new GeneratorFilterHigh();}) );
-    map.insert( tGeneratorToConstructor::value_type(std::string("FilterComb"), [](int sampleRate) { return new GeneratorFilterComb();}) );
-    map.insert( tGeneratorToConstructor::value_type(std::string("Hold"), [](int sampleRate) { return new GeneratorHold();}) );
-    map.insert( tGeneratorToConstructor::value_type(std::string("Noise"), [](int sampleRate) { return new GeneratorNoise(sampleRate);}) );
-    map.insert( tGeneratorToConstructor::value_type(std::string("Pinkify"), [](int sampleRate) { return new GeneratorPinkify(sampleRate);}) );
-    map.insert( tGeneratorToConstructor::value_type(std::string("MidiChannel"), [](int sampleRate) { return new GeneratorMidiChannel(sampleRate);}) );
+    map.insert( tGeneratorToConstructor::value_type(std::string("Sine"), [](const std::string& name, int sampleRate) { return new GeneratorSine(name, sampleRate);}) );
+    map.insert( tGeneratorToConstructor::value_type(std::string("Saw"), [](const std::string& name, int sampleRate) { return new GeneratorSaw(name, sampleRate);}) );
+    map.insert( tGeneratorToConstructor::value_type(std::string("Square"), [](const std::string& name, int sampleRate) { return new GeneratorSquare(name, sampleRate);}) );
+    map.insert( tGeneratorToConstructor::value_type(std::string("Lerp"), [](const std::string& name, int sampleRate) { return new GeneratorLerp(name);}) );
+    map.insert( tGeneratorToConstructor::value_type(std::string("Lerp01"), [](const std::string& name, int sampleRate) { return new GeneratorLerp01(name);}) );
+    map.insert( tGeneratorToConstructor::value_type(std::string("Threshold"), [](const std::string& name, int sampleRate) { return new GeneratorThreshold(name);}) );
+    map.insert( tGeneratorToConstructor::value_type(std::string("Delay"), [](const std::string& name, int sampleRate) { return new GeneratorDelay(name);}) );
+    map.insert( tGeneratorToConstructor::value_type(std::string("Multiply"), [](const std::string& name, int sampleRate) { return new GeneratorMultiply(name);}) );
+    map.insert( tGeneratorToConstructor::value_type(std::string("Add"), [](const std::string& name, int sampleRate) { return new GeneratorAdd(name);}) );
+    map.insert( tGeneratorToConstructor::value_type(std::string("Pulse"), [](const std::string& name, int sampleRate) { return new GeneratorPulse(name, sampleRate);}) );
+    map.insert( tGeneratorToConstructor::value_type(std::string("Ramp"), [](const std::string& name, int sampleRate) { return new GeneratorRamp(name, sampleRate);}) );
+    map.insert( tGeneratorToConstructor::value_type(std::string("Hardclip"), [](const std::string& name, int sampleRate) { return new GeneratorValueTransformHardClip(name);}) );
+    map.insert( tGeneratorToConstructor::value_type(std::string("FilterLadder"), [](const std::string& name, int sampleRate) { return new GeneratorFilter(name);}) );
+    map.insert( tGeneratorToConstructor::value_type(std::string("FilterHigh"), [](const std::string& name, int sampleRate) { return new GeneratorFilterHigh(name);}) );
+    map.insert( tGeneratorToConstructor::value_type(std::string("FilterComb"), [](const std::string& name, int sampleRate) { return new GeneratorFilterComb(name);}) );
+    map.insert( tGeneratorToConstructor::value_type(std::string("Hold"), [](const std::string& name, int sampleRate) { return new GeneratorHold(name);}) );
+    map.insert( tGeneratorToConstructor::value_type(std::string("Noise"), [](const std::string& name, int sampleRate) { return new GeneratorNoise(name);}) );
+    map.insert( tGeneratorToConstructor::value_type(std::string("Pinkify"), [](const std::string& name, int sampleRate) { return new GeneratorPinkify(name, sampleRate);}) );
+    map.insert( tGeneratorToConstructor::value_type(std::string("MidiChannel"), [](const std::string& name, int sampleRate) { return new GeneratorMidiChannel(name, sampleRate);}) );
 }
         
 

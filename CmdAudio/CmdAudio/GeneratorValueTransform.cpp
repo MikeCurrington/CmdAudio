@@ -3,7 +3,7 @@
 #include <cstddef>
 #include "GeneratorValueTransform.h"
 
-GeneratorValueTransform::GeneratorValueTransform() : sourceBuffer(nullptr)
+GeneratorValueTransform::GeneratorValueTransform(const std::string & name) : GeneratorBase(name), sourceBuffer(nullptr)
 {
 }
 

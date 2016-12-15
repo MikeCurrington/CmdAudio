@@ -58,11 +58,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "CmdAudio/AudioHierarchyBuilder.cpp"
-            timestampString = "499015092.667709"
+            timestampString = "499644003.124436"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "184"
-            endingLineNumber = "184"
+            startingLineNumber = "186"
+            endingLineNumber = "186"
             landmarkName = "class CmdAudioListenerImpl"
             landmarkType = "3">
          </BreakpointContent>
@@ -112,38 +112,6 @@
             startingLineNumber = "37"
             endingLineNumber = "37"
             landmarkName = "GeneratorStateStatement( int id)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "CmdAudio/MachineState.cpp"
-            timestampString = "498975813.535046"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "62"
-            endingLineNumber = "62"
-            landmarkName = "MachineState::SetGeneratorBuffer( int generatorId, BaseCountedPtr&lt;SampleDataBuffer&gt; buffer )"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "CmdAudio/GeneratorInstance.cpp"
-            timestampString = "499016842.289616"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "63"
-            endingLineNumber = "63"
-            landmarkName = "GeneratorInstance::Supply(MachineState&amp; machineState, BaseCountedPtr&lt;SampleDataBuffer&gt;&amp; rDataBuffer, int startSample)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

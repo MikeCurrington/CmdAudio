@@ -15,16 +15,18 @@ class MachineState;
 class GeneratorBase : public BaseCounted<GeneratorBase>
 {
 public:
-	GeneratorBase();
+	GeneratorBase(const std::string& name);
+    const std::string& GetName() const            { return m_name; }
 
 	virtual void AddInput(const std::string& paramName, BaseCountedPtr<GeneratorBase> value);
 	virtual void Supply(MachineState& machineState, BaseCountedPtr<SampleDataBuffer>& rDataBuffer, int startSample) = 0;
     
 protected:
-    int                 GetId()     { return id; }
+    int                 GetId() const       { return m_id; }
 
 private:
-    int                 id;
+    const std::string   m_name;
+    int                 m_id;
 };
 
 

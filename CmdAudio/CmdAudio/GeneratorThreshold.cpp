@@ -2,7 +2,7 @@
 #include "GeneratorThreshold.h"
 #include "string.h"
 
-GeneratorThreshold::GeneratorThreshold()
+GeneratorThreshold::GeneratorThreshold(const std::string & name) : GeneratorBase(name)
 {
 }
 

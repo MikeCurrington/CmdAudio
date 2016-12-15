@@ -12,8 +12,8 @@
 class GeneratorFilterHigh : public GeneratorValueTransform
 {
 public:
-    GeneratorFilterHigh();
-    ~GeneratorFilterHigh();
+    GeneratorFilterHigh(const std::string & name);
+    virtual ~GeneratorFilterHigh();
     
     virtual void AddInput(const std::string& paramName, BaseCountedPtr<GeneratorBase> value) override;
     virtual void Supply(MachineState& machineState, BaseCountedPtr<SampleDataBuffer>& rDataBuffer, int startSample) override;

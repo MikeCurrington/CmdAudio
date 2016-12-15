@@ -3,7 +3,7 @@
 #include "GeneratorSaw.h"
 #include "MachineState.h"
 
-GeneratorSaw::GeneratorSaw( int sampleRate ) : GeneratorWaveformBase(sampleRate)
+GeneratorSaw::GeneratorSaw( const std::string & name, int sampleRate ) : GeneratorWaveformBase(name, sampleRate)
 {
 }
 

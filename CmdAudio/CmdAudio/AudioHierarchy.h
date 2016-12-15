@@ -41,7 +41,7 @@ protected:
 
 private:
     
-    typedef std::function<GeneratorBase*(int)> tGeneratorConstructor;
+    typedef std::function<GeneratorBase*(const std::string& name, int sampleRate)> tGeneratorConstructor;
     typedef std::map<std::string,tGeneratorConstructor> tGeneratorToConstructor;
     struct GeneratorTypeToConstructor {
         operator const tGeneratorToConstructor() const {

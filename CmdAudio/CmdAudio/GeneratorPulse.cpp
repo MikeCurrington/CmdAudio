@@ -3,7 +3,7 @@
 #include "GeneratorPulse.h"
 #include "MachineState.h"
 
-GeneratorPulse::GeneratorPulse( int sampleRate ) : GeneratorWaveformBase(sampleRate)
+GeneratorPulse::GeneratorPulse( const std::string& name, int sampleRate ) : GeneratorWaveformBase(name, sampleRate)
 {
 }
 

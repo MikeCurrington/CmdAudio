@@ -4,7 +4,7 @@
 #include "GeneratorValueTransformHardClip.h"
 
 
-GeneratorValueTransformHardClip::GeneratorValueTransformHardClip() : GeneratorValueTransform(), clip(nullptr)
+GeneratorValueTransformHardClip::GeneratorValueTransformHardClip(const std::string& name) : GeneratorValueTransform(name), clip(nullptr)
 {
 }
 

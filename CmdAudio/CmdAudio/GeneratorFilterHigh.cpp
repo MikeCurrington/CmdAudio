@@ -12,7 +12,7 @@
 #include "string.h"
 
 
-GeneratorFilterHigh::GeneratorFilterHigh() : GeneratorValueTransform()
+GeneratorFilterHigh::GeneratorFilterHigh(const std::string & name) : GeneratorValueTransform(name)
 {
 }
 

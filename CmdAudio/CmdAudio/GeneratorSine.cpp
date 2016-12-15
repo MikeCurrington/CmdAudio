@@ -3,7 +3,7 @@
 #include "GeneratorSine.h"
 #include "MachineState.h"
 
-GeneratorSine::GeneratorSine(int sampleRate) : GeneratorWaveformBase(sampleRate)
+GeneratorSine::GeneratorSine(const std::string& name, int sampleRate) : GeneratorWaveformBase(name, sampleRate)
 {
 }
 

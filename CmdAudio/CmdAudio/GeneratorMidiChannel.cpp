@@ -12,7 +12,7 @@
 #include "MachineState.h"
 
 
-GeneratorMidiChannel::GeneratorMidiChannel(int sampleRate) : GeneratorBase()
+GeneratorMidiChannel::GeneratorMidiChannel(const std::string& name, int sampleRate) : GeneratorBase(name)
 {
 }
 

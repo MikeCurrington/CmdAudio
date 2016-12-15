@@ -8,7 +8,7 @@
 
 #include "GeneratorAdd.h"
 
-GeneratorAdd::GeneratorAdd() : GeneratorBase()
+GeneratorAdd::GeneratorAdd(const std::string & name) : GeneratorBase(name)
 {
 }
 

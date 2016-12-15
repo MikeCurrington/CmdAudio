@@ -12,7 +12,7 @@
 class GeneratorFilter : public GeneratorValueTransform
 {
 public:
-    GeneratorFilter();
+    GeneratorFilter(const std::string& name);
     ~GeneratorFilter();
     
     virtual void AddInput(const std::string& paramName, BaseCountedPtr<GeneratorBase> value) override;

@@ -14,7 +14,7 @@ private:
     GeneratorPinkify();		// deliberately not implemented
     
 public:
-    GeneratorPinkify(int sampleRate);
+    GeneratorPinkify(const std::string& name, int sampleRate);
     
 protected:
     virtual void AddInput(const std::string& paramName, BaseCountedPtr<GeneratorBase> value) override;
